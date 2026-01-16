@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dai Dang | Welcome</title>
+    <title>Dai Dang | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        html { scroll-behavior: smooth; }
         .video-docker video {
             top: 50%;
             left: 50%;
@@ -16,55 +18,89 @@
             height: auto;
         }
         .video-overlay {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .portfolio-card:hover .overlay {
+            opacity: 1;
         }
     </style>
 </head>
-<body class="bg-gray-900 font-sans leading-normal tracking-normal">
+<body class="bg-gray-50 font-sans leading-normal tracking-normal text-gray-900">
 
-    <section class="relative h-screen flex flex-col items-center justify-center text-center text-white py-0 px-3">
-        
+    <section class="relative h-screen flex flex-col items-center justify-center text-center text-white px-4">
         <div class="video-docker absolute top-0 left-0 w-full h-full overflow-hidden">
             <video class="min-w-full min-h-full absolute object-cover" 
                    src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-connection-loop-2882-large.mp4" 
                    type="video/mp4" autoplay muted loop playsinline></video>
         </div>
-
         <div class="video-overlay absolute top-0 left-0 w-full h-full"></div>
         
-        <div class="z-10 mt-[-10vh]">
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-                DAI DANG
-            </h1>
-            <p class="text-lg md:text-2xl font-light mb-8 max-w-2xl mx-auto opacity-90">
-                Creative Visionary & Tech Enthusiast.
+        <div class="z-10">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-4 uppercase">DAI DANG</h1>
+            <p class="text-xl md:text-2xl font-light mb-8 max-w-2xl mx-auto text-gray-200">
+                Digital Architect & Creative Developer
             </p>
-            <div class="flex space-x-4 justify-center">
-                <a href="#about" class="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition duration-300">
-                    Explore More
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#portfolio" class="bg-blue-600 text-white px-10 py-4 rounded-full font-bold hover:bg-blue-700 transition transform hover:scale-105 duration-300">
+                    View Portfolio
                 </a>
-                <a href="mailto:hello@daidang.com" class="border-2 border-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-black transition duration-300">
+                <a href="mailto:hello@daidang.com" class="bg-white/10 backdrop-blur-md border border-white/30 px-10 py-4 rounded-full font-bold hover:bg-white/20 transition duration-300">
                     Contact Me
                 </a>
             </div>
         </div>
+    </section>
 
-        <div class="absolute bottom-10 z-10 animate-bounce">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
+    <section id="portfolio" class="py-24 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Selected Work</h2>
+                <div class="h-1 w-20 bg-blue-600 mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="portfolio-card relative group overflow-hidden rounded-xl shadow-lg bg-gray-200 aspect-video">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Project 1" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="overlay absolute inset-0 bg-blue-900/90 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 p-6 text-center text-white">
+                        <h3 class="text-xl font-bold">Brand Identity</h3>
+                        <p class="text-blue-100 text-sm mt-2">UX Design / Development</p>
+                    </div>
+                </div>
+
+                <div class="portfolio-card relative group overflow-hidden rounded-xl shadow-lg bg-gray-200 aspect-video">
+                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Project 2" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="overlay absolute inset-0 bg-blue-900/90 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 p-6 text-center text-white">
+                        <h3 class="text-xl font-bold">Mobile App</h3>
+                        <p class="text-blue-100 text-sm mt-2">React Native / Figma</p>
+                    </div>
+                </div>
+
+                <div class="portfolio-card relative group overflow-hidden rounded-xl shadow-lg bg-gray-200 aspect-video">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Project 3" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="overlay absolute inset-0 bg-blue-900/90 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 p-6 text-center text-white">
+                        <h3 class="text-xl font-bold">E-Commerce</h3>
+                        <p class="text-blue-100 text-sm mt-2">Shopify / Next.js</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section id="about" class="py-20 bg-white px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-gray-800">About Me</h2>
-            <p class="text-gray-600 text-lg leading-relaxed">
-                Hi, I'm Dai Dang. I specialize in building high-quality digital experiences that combine sleek design with functional code. 
-                Whether it's a web application or a brand identity, I focus on delivering excellence.
-            </p>
+    <footer class="bg-gray-900 text-white py-12 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div class="mb-8 md:mb-0">
+                <h3 class="text-2xl font-bold tracking-tighter">DAI DANG</h3>
+                <p class="text-gray-400 mt-2">© 2026 All rights reserved.</p>
+            </div>
+            
+            <div class="flex space-x-6 text-2xl">
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-instagram"></i></a>
+            </div>
         </div>
-    </section>
+    </footer>
 
 </body>
 </html>
