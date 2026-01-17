@@ -332,33 +332,53 @@
         </footer>
 
     <script>
-        // Navbar Scrolled Effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
-            else navbar.classList.remove('nav-scrolled');
-        });
+// Navbar Scrolled Effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
+        else navbar.classList.remove('nav-scrolled');
+    });
 
-        function toggleMenu() {
-            document.getElementById('mobile-menu').classList.toggle('menu-hidden');
+    // Main Mobile Menu Toggle
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const body = document.body;
+        
+        menu.classList.toggle('menu-hidden');
+        
+        // Prevent background scrolling when menu is open
+        if (!menu.classList.contains('menu-hidden')) {
+            body.style.overflow = 'hidden';
+        } else {
+            body.style.overflow = 'auto';
         }
-
-        // Toggle Mobile Menu
-    function toggleMobileSubmenu() {
-    const menu = document.getElementById('mobile-projects-menu');
-    const chevron = document.getElementById('mobile-chevron');
-    
-    // Toggle visibility
-    if (menu.classList.contains('hidden')) {
-        menu.classList.remove('hidden');
-        menu.classList.add('flex');
-        chevron.style.transform = 'rotate(180deg)';
-    } else {
-        menu.classList.add('hidden');
-        menu.classList.remove('flex');
-        chevron.style.transform = 'rotate(0deg)';
     }
-}
+
+    // Mobile Submenu (Projects) Toggle
+    function toggleMobileSubmenu() {
+        const submenu = document.getElementById('mobile-projects-menu');
+        const chevron = document.getElementById('mobile-chevron');
+        
+        // Check if hidden using Tailwind's 'hidden' class
+        if (submenu.classList.contains('hidden')) {
+            submenu.classList.remove('hidden');
+            submenu.classList.add('flex');
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            submenu.classList.add('hidden');
+            submenu.classList.remove('flex');
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Close menu if a link is clicked (for anchor tags)
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (link.getAttribute('href').startsWith('#')) {
+                toggleMenu();
+            }
+        });
+    });
     </script>
 </body>
 </html>
