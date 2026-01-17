@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         html { scroll-behavior: smooth; }
+        
+        /* Video Background */
         .video-docker video {
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -15,47 +17,45 @@
             width: auto; height: auto;
         }
         .video-overlay { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)); }
-        
-        /* Navbar Alignment & States */
+
+        /* Scrolled Navbar */
         .nav-scrolled {
             background-color: #111827 !important;
-            padding-top: 0.75rem !important;
-            padding-bottom: 0.75rem !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
             border-bottom: 4px solid #2563eb;
         }
 
-        /* Fixed Project Dropdown Logic */
-        .nav-item { display: flex; align-items: center; height: 100%; }
-        
-        .dropdown-trigger { position: relative; }
-        .dropdown-trigger:hover .dropdown-menu { 
-            display: block; 
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .dropdown-menu {
+        /* --- MEGA MENU LOGIC --- */
+        .mega-menu {
             display: none;
             position: absolute;
-            top: 100%;
             left: 0;
-            width: 220px;
+            right: 0;
+            top: 100%;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%); /* Centers it to the screen */
             background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             border-top: 4px solid #2563eb;
-            z-index: 100;
-            margin-top: 10px;
+            z-index: 1000;
         }
 
-        /* FAQ Transition */
+        /* Keep menu open when hovering the bridge between link and menu */
+        .group:hover .mega-menu {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FAQ Toggle */
         .faq-content { max-height: 0; overflow: hidden; transition: all 0.3s ease-out; }
         .faq-item.active .faq-content { max-height: 300px; padding-bottom: 1.5rem; }
         .faq-item.active i { transform: rotate(180deg); color: #2563eb; }
-
-        .view-btn {
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            transition: all 0.3s ease;
-        }
-        .view-btn:hover { clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%); }
 
         #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .menu-hidden { transform: translateX(100%); }
@@ -64,30 +64,63 @@
 <body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
 
     <header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+            
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-blue-600 flex items-center justify-center font-black text-white text-xl">D</div>
                 <a href="#" class="text-2xl font-black tracking-tighter text-white uppercase">DAI DANG</a>
             </div>
 
             <div class="hidden lg:flex items-center space-x-10">
-                <nav class="flex items-center space-x-8 text-[13px] uppercase font-bold tracking-widest text-white h-full">
-                    <a href="#" class="hover:text-blue-500 transition h-full flex items-center">Home</a>
+                <nav class="flex items-center space-x-8 text-[13px] uppercase font-bold tracking-widest text-white">
+                    <a href="#" class="hover:text-blue-500 transition py-4">Home</a>
                     
-                    <div class="dropdown-trigger h-full flex items-center cursor-pointer">
-                        <span class="hover:text-blue-500 transition flex items-center">
+                    <div class="group py-4">
+                        <button class="hover:text-blue-500 transition flex items-center focus:outline-none">
                             Projects <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
-                        </span>
-                        <div class="dropdown-menu text-gray-800">
-                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 border-b border-gray-100 transition">Web Architecture</a>
-                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 border-b border-gray-100 transition">Mobile Systems</a>
-                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 transition">UI Frameworks</a>
+                        </button>
+                        
+                        <div class="mega-menu p-10 text-gray-800">
+                            <div class="max-w-7xl mx-auto grid grid-cols-4 gap-8">
+                                <div>
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=300&q=80" class="w-full h-32 object-cover mb-4 rounded" alt="Web">
+                                    <h4 class="font-black text-blue-600 mb-2 border-b pb-2">Web Design</h4>
+                                    <ul class="space-y-2 text-xs text-gray-500 tracking-normal font-medium">
+                                        <li><a href="#portfolio" class="hover:text-blue-600">Enterprise Platforms</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">E-Commerce Architecture</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">UI/UX Prototypes</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=300&q=80" class="w-full h-32 object-cover mb-4 rounded" alt="Mobile">
+                                    <h4 class="font-black text-blue-600 mb-2 border-b pb-2">App Development</h4>
+                                    <ul class="space-y-2 text-xs text-gray-500 tracking-normal font-medium">
+                                        <li><a href="#portfolio" class="hover:text-blue-600">iOS/Android Native</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">Hybrid Solutions</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">App Optimization</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=300&q=80" class="w-full h-32 object-cover mb-4 rounded" alt="Systems">
+                                    <h4 class="font-black text-blue-600 mb-2 border-b pb-2">Cloud Systems</h4>
+                                    <ul class="space-y-2 text-xs text-gray-500 tracking-normal font-medium">
+                                        <li><a href="#portfolio" class="hover:text-blue-600">AWS Infrastructure</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">Security Audits</a></li>
+                                        <li><a href="#portfolio" class="hover:text-blue-600">Scalable Databases</a></li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-6 flex flex-col justify-center border-l">
+                                    <h4 class="font-black mb-2">Need a Custom Solution?</h4>
+                                    <p class="text-xs text-gray-500 mb-4 normal-case font-normal">I specialize in high-end industrial digital architecture.</p>
+                                    <a href="mailto:hello@daidang.com" class="bg-blue-600 text-white text-[10px] py-3 px-4 text-center font-black uppercase tracking-widest hover:bg-gray-900 transition">Start Project</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <a href="#process" class="hover:text-blue-500 transition h-full flex items-center">Process</a>
-                    <a href="#pricing" class="hover:text-blue-500 transition h-full flex items-center">Pricing</a>
-                    <a href="#faq" class="hover:text-blue-500 transition h-full flex items-center">FAQ</a>
+                    <a href="#process" class="hover:text-blue-500 transition py-4">Process</a>
+                    <a href="#pricing" class="hover:text-blue-500 transition py-4">Pricing</a>
+                    <a href="#faq" class="hover:text-blue-500 transition py-4">FAQ</a>
                 </nav>
                 
                 <div class="flex items-center space-x-6 border-l border-white/20 pl-10 text-white">
@@ -101,17 +134,6 @@
         </div>
     </header>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 z-[60] flex flex-col p-10 text-white menu-hidden lg:hidden">
-        <button class="self-end text-4xl" onclick="toggleMenu()">&times;</button>
-        <nav class="flex flex-col space-y-6 mt-10 text-3xl font-black uppercase">
-            <a href="#" onclick="toggleMenu()">Home</a>
-            <a href="#portfolio" onclick="toggleMenu()">Projects</a>
-            <a href="#process" onclick="toggleMenu()">Process</a>
-            <a href="#pricing" onclick="toggleMenu()">Pricing</a>
-            <a href="#faq" onclick="toggleMenu()">FAQ</a>
-        </nav>
-    </div>
-
     <section class="relative h-screen flex items-center justify-start px-6 md:px-20 overflow-hidden">
         <div class="video-docker absolute top-0 left-0 w-full h-full">
             <video class="object-cover w-full h-full" src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-connection-loop-2882-large.mp4" autoplay muted loop playsinline></video>
@@ -122,21 +144,6 @@
             <a href="#portfolio" class="inline-block bg-blue-600 text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-white hover:text-blue-600 transition duration-300">
                 Browse Case Studies
             </a>
-        </div>
-    </section>
-
-    <section id="process" class="py-32 px-6 bg-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-20">
-                <p class="text-blue-600 font-black tracking-widest uppercase mb-2">Strategy</p>
-                <h2 class="text-5xl font-black uppercase text-gray-900">Working Process</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">01</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Discovery</h3><p class="text-gray-500 leading-relaxed">Analyzing requirements and industrial benchmarks.</p></div></div>
-                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">02</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Architecture</h3><p class="text-gray-500 leading-relaxed">Designing framework and security protocols.</p></div></div>
-                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">03</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Development</h3><p class="text-gray-500 leading-relaxed">Surgical code execution and modular design.</p></div></div>
-                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">04</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Launch</h3><p class="text-gray-500 leading-relaxed">Precision deployment and performance auditing.</p></div></div>
-            </div>
         </div>
     </section>
 
@@ -178,71 +185,20 @@
         </div>
     </section>
 
-    <section id="pricing" class="py-32 px-6 bg-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16 uppercase">
-                <h2 class="text-5xl font-black text-gray-900">Investment</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="border-4 border-gray-100 p-10 flex flex-col text-center">
-                    <h3 class="text-xl font-black uppercase mb-4">Starter</h3>
-                    <div class="text-4xl font-black mb-6">$2,500</div>
-                    <a href="mailto:hello@daidang.com" class="py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Get Quote</a>
-                </div>
-                <div class="border-4 border-blue-600 p-10 bg-gray-900 text-white flex flex-col text-center scale-105 shadow-2xl">
-                    <h3 class="text-xl font-black uppercase mb-4">Enterprise</h3>
-                    <div class="text-4xl font-black mb-6">$5,000</div>
-                    <a href="mailto:hello@daidang.com" class="py-4 bg-blue-600 text-white font-black uppercase text-xs tracking-widest hover:bg-white hover:text-blue-600 transition">Get Quote</a>
-                </div>
-                <div class="border-4 border-gray-100 p-10 flex flex-col text-center">
-                    <h3 class="text-xl font-black uppercase mb-4">Custom</h3>
-                    <div class="text-4xl font-black mb-6">Contact</div>
-                    <a href="mailto:hello@daidang.com" class="py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Get Quote</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section id="faq" class="py-32 px-6 bg-gray-100">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-4xl font-black uppercase text-center mb-16 tracking-tighter">Frequently Asked Questions</h2>
+        <div class="max-w-4xl mx-auto text-center md:text-left">
+            <h2 class="text-4xl font-black uppercase mb-16">Support FAQ</h2>
             <div class="space-y-4">
-                <div class="faq-item bg-white border-l-4 border-blue-600 cursor-pointer transition-all" onclick="this.classList.toggle('active')">
+                <div class="faq-item bg-white border-l-4 border-blue-600 cursor-pointer" onclick="this.classList.toggle('active')">
                     <div class="p-6 flex justify-between items-center">
-                        <span class="font-black uppercase tracking-tight text-sm md:text-base">What is the typical turnaround for a project?</span>
-                        <i class="fas fa-chevron-down transition-transform"></i>
+                        <span class="font-black uppercase tracking-tight">Project Timelines?</span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-                    <div class="faq-content px-6 text-gray-600 text-sm leading-relaxed">
-                        Most projects are completed within 4 to 8 weeks, depending on the complexity and technical requirements of the build.
-                    </div>
-                </div>
-                <div class="faq-item bg-white border-l-4 border-blue-600 cursor-pointer transition-all" onclick="this.classList.toggle('active')">
-                    <div class="p-6 flex justify-between items-center">
-                        <span class="font-black uppercase tracking-tight text-sm md:text-base">Do you provide long-term maintenance?</span>
-                        <i class="fas fa-chevron-down transition-transform"></i>
-                    </div>
-                    <div class="faq-content px-6 text-gray-600 text-sm leading-relaxed">
-                        Yes, we offer ongoing maintenance packages to ensure your systems remain secure and updated with the latest technologies.
-                    </div>
+                    <div class="faq-content px-6">Typically 4-8 weeks for industrial digital projects.</div>
                 </div>
             </div>
         </div>
     </section>
-
-    <footer class="bg-gray-900 text-white py-20 px-6 border-t-8 border-blue-600">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <div class="mb-12 md:mb-0">
-                <h3 class="text-4xl font-black uppercase mb-2">DAI DANG</h3>
-                <p class="text-gray-500 uppercase text-xs tracking-[0.3em]">Modern Industrial Architecture.</p>
-            </div>
-            <div class="flex space-x-10 text-2xl">
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-github"></i></a>
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </footer>
 
     <script>
         window.addEventListener('scroll', function() {
