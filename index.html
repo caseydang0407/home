@@ -26,7 +26,7 @@
             border-bottom: 4px solid #2563eb;
         }
 
-        /* --- MEGA MENU (AVADA RECRUITMENT STYLE) --- */
+        /* --- MEGA MENU --- */
         .mega-menu {
             display: none;
             position: absolute;
@@ -66,6 +66,19 @@
 
         #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .menu-hidden { transform: translateX(100%); }
+        
+        /* Ensure the mega menu takes up the full width of the viewport */
+        .mega-menu {
+            left: 0;
+            right: 0;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%); /* Centers it back if the parent container is limited */
+        }
+
+        /* Add a helper to prevent body scroll when mobile menu is open */
+        .no-scroll {
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
