@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dai Dang | Portfolio</title>
+    <title>Dai Dang | Industrial Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -14,138 +14,193 @@
             min-width: 100%; min-height: 100%;
             width: auto; height: auto;
         }
-        .video-overlay { background: rgba(0, 0, 0, 0.6); }
-        .portfolio-card:hover .overlay { opacity: 1; }
-        @keyframes grow { from { width: 0; } to { width: var(--target-width); } }
-        .progress-fill { animation: grow 1.5s ease-out forwards; }
+        .video-overlay { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)); }
         
-        /* Mobile Menu Animation */
-        #mobile-menu { transition: transform 0.3s ease-in-out; }
-        .menu-hidden { transform: translateY(-100%); }
+        /* Avada Factory Style Elements */
+        .nav-scrolled {
+            background-color: #111827 !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            border-bottom: 4px solid #2563eb;
+        }
+        
+        .section-heading {
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+        }
+
+        .industrial-border {
+            position: relative;
+            padding-left: 1.5rem;
+            border-left: 5px solid #2563eb;
+        }
+
+        /* Portfolio Button Hover */
+        .view-btn {
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: all 0.3s ease;
+        }
+        .view-btn:hover {
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+        }
+
+        #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-hidden { transform: translateX(100%); }
     </style>
 </head>
-<body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
+<body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
 
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 px-6">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-black tracking-tighter text-white drop-shadow-md" id="nav-logo">DAI DANG</a>
-            
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="#" class="nav-link text-white font-medium hover:text-blue-400 transition">Home</a>
-                <a href="#portfolio" class="nav-link text-white font-medium hover:text-blue-400 transition">Work</a>
-                <a href="#skills" class="nav-link text-white font-medium hover:text-blue-400 transition">Skills</a>
-                <a href="mailto:hello@daidang.com" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition">Hire Me</a>
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-600 flex items-center justify-center font-black text-white text-xl">D</div>
+                <a href="#" class="text-2xl font-black tracking-tighter text-white uppercase" id="nav-logo">DAI DANG</a>
             </div>
-
-            <button class="md:hidden text-white text-2xl" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="hidden lg:flex items-center space-x-10">
+                <nav class="flex space-x-8 text-[13px] uppercase font-bold tracking-widest">
+                    <a href="#" class="text-white hover:text-blue-500 transition">Home</a>
+                    <a href="#portfolio" class="text-white hover:text-blue-500 transition">Projects</a>
+                    <a href="#skills" class="text-white hover:text-blue-500 transition">Capabilities</a>
+                </nav>
+                <div class="flex items-center space-x-6 border-l border-white/20 pl-10 text-white">
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-3 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-blue-600 transition duration-300">
+                        Work With Me
+                    </a>
+                </div>
+            </div>
+            <button class="lg:hidden text-white text-3xl" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
         </div>
-    </nav>
+    </header>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 z-40 flex flex-col items-center justify-center space-y-8 text-white text-2xl font-bold menu-hidden md:hidden">
-        <button class="absolute top-6 right-6 text-3xl" onclick="toggleMenu()">&times;</button>
-        <a href="#" onclick="toggleMenu()">Home</a>
-        <a href="#portfolio" onclick="toggleMenu()">Work</a>
-        <a href="#skills" onclick="toggleMenu()">Skills</a>
-        <a href="mailto:hello@daidang.com" onclick="toggleMenu()" class="text-blue-400">Hire Me</a>
+    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 z-[60] flex flex-col p-10 text-white menu-hidden lg:hidden">
+        <button class="self-end text-4xl" onclick="toggleMenu()">&times;</button>
+        <nav class="flex flex-col space-y-6 mt-10 text-3xl font-black uppercase italic">
+            <a href="#" onclick="toggleMenu()">Home</a>
+            <a href="#portfolio" onclick="toggleMenu()">Projects</a>
+            <a href="#skills" onclick="toggleMenu()">Capabilities</a>
+        </nav>
     </div>
 
-    <section class="relative h-screen flex flex-col items-center justify-center text-center text-white px-4">
-        <div class="video-docker absolute top-0 left-0 w-full h-full overflow-hidden">
-            <video class="min-w-full min-h-full absolute object-cover" 
-                   src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-connection-loop-2882-large.mp4" 
-                   type="video/mp4" autoplay muted loop playsinline></video>
+    <section class="relative h-screen flex items-center justify-start px-6 md:px-20 overflow-hidden">
+        <div class="video-docker absolute top-0 left-0 w-full h-full">
+            <video class="object-cover w-full h-full" src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-connection-loop-2882-large.mp4" autoplay muted loop playsinline></video>
         </div>
         <div class="video-overlay absolute top-0 left-0 w-full h-full"></div>
         
-        <div class="z-10">
-            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-4 uppercase">DAI DANG</h1>
-            <p class="text-xl md:text-2xl font-light mb-8 max-w-2xl mx-auto text-gray-200">
-                Digital Architect & Creative Developer
-            </p>
+        <div class="z-10 max-w-4xl">
+            <p class="text-blue-500 font-black tracking-[0.4em] uppercase mb-4 text-sm">Creative Solutions / Industrial Scale</p>
+            <h1 class="text-7xl md:text-[120px] font-black text-white section-heading mb-6">DAI<br>DANG</h1>
+            <div class="industrial-border text-gray-300 text-lg md:text-xl font-medium max-w-lg mb-8 italic">
+                Architecting digital infrastructures with surgical precision and modern aesthetics.
+            </div>
+            <a href="#portfolio" class="inline-block bg-transparent border-2 border-white text-white px-10 py-4 font-black uppercase tracking-widest hover:bg-blue-600 hover:border-blue-600 transition duration-300">
+                Explore Projects
+            </a>
         </div>
     </section>
 
-    <section id="portfolio" class="py-24 px-6 bg-white">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4">Selected Work</h2>
-                <div class="h-1 w-20 bg-blue-600 mx-auto"></div>
+    <section id="portfolio" class="py-32 px-6 bg-[#111827]">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-10">
+                <div>
+                    <p class="text-blue-500 font-black tracking-widest uppercase mb-2">Portfolio</p>
+                    <h2 class="text-5xl md:text-7xl font-black text-white section-heading uppercase">Case Studies</h2>
+                </div>
+                <p class="text-gray-400 max-w-md mt-6 md:mt-0 italic">Showcasing a collection of engineering-focused digital products and brand identities.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="portfolio-card relative group overflow-hidden rounded-xl shadow-lg bg-gray-200 aspect-video">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Project" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                    <div class="overlay absolute inset-0 bg-black/70 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 p-6 text-center text-white">
-                        <h3 class="text-xl font-bold">Brand Identity</h3>
-                        <p class="text-gray-300 text-sm mt-2 mb-4">UX Design / Development</p>
-                        <a href="https://yourlink1.com" target="_blank" class="px-5 py-2 bg-blue-600 rounded-full text-sm font-bold hover:bg-blue-700 transition transition-transform hover:scale-105">
-                            View Project <i class="fas fa-external-link-alt ml-1"></i>
-                        </a>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+                <div class="portfolio-card relative group overflow-hidden bg-black aspect-square border border-white/5">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end">
+                        <span class="text-blue-500 font-bold text-xs tracking-widest mb-2 uppercase">Systems Design</span>
+                        <h3 class="text-3xl font-black text-white uppercase mb-6">Factory 2.0</h3>
+                        <div class="opacity-0 group-hover:opacity-100 transition duration-300">
+                            <a href="https://yourlink.com" target="_blank" class="view-btn inline-block bg-blue-600 text-white px-8 py-3 text-xs font-black uppercase tracking-widest">
+                                Launch Site
+                            </a>
+                        </div>
                     </div>
                 </div>
                 </div>
         </div>
     </section>
 
-    <section id="skills" class="py-24 px-6 bg-gray-50">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4">Skills & Expertise</h2>
-                <div class="h-1 w-20 bg-blue-600 mx-auto"></div>
+    <section id="skills" class="py-32 px-6 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20">
+            <div class="lg:w-1/3">
+                <p class="text-blue-600 font-black tracking-widest uppercase mb-2">Capabilities</p>
+                <h2 class="text-5xl font-black section-heading uppercase mb-6 text-gray-900">Digital<br>Expertise</h2>
+                <div class="w-20 h-2 bg-blue-600 mb-8"></div>
+                <p class="text-gray-600 leading-relaxed">High-performance development paired with scalable architecture. Building tools that empower business growth.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 text-gray-700">
+            
+            <div class="lg:w-2/3 grid grid-cols-1 gap-12">
                 <div>
-                    <div class="flex justify-between mb-2"><span class="font-bold">Frontend Development</span><span class="text-blue-600 font-bold">95%</span></div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-blue-600 h-2.5 rounded-full progress-fill" style="--target-width: 95%; width: 95%;"></div></div>
+                    <div class="flex justify-between items-end mb-3">
+                        <span class="text-xl font-black uppercase tracking-tighter">Frontend Infrastructure</span>
+                        <span class="text-blue-600 font-black text-2xl">95%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-4">
+                        <div class="bg-blue-600 h-full progress-fill shadow-[0_0_15px_rgba(37,99,235,0.4)]" style="--target-width: 95%; width: 95%;"></div>
+                    </div>
                 </div>
                 <div>
-                    <div class="flex justify-between mb-2"><span class="font-bold">UI/UX Design</span><span class="text-blue-600 font-bold">85%</span></div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="bg-blue-600 h-2.5 rounded-full progress-fill" style="--target-width: 85%; width: 85%;"></div></div>
+                    <div class="flex justify-between items-end mb-3">
+                        <span class="text-xl font-black uppercase tracking-tighter">Full-Stack Engineering</span>
+                        <span class="text-blue-600 font-black text-2xl">88%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-4">
+                        <div class="bg-blue-600 h-full progress-fill shadow-[0_0_15px_rgba(37,99,235,0.4)]" style="--target-width: 88%; width: 88%;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-gray-900 text-white py-12 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-center">
-            <div class="mb-8 md:mb-0">
-                <h3 class="text-2xl font-bold tracking-tighter">DAI DANG</h3>
-                <p class="text-gray-400 mt-2">© 2026 All rights reserved.</p>
+    <footer class="bg-gray-950 text-white py-20 px-6 border-t-8 border-blue-600">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start">
+            <div class="mb-12 md:mb-0">
+                <h3 class="text-4xl font-black tracking-tighter uppercase mb-2">DAI DANG</h3>
+                <p class="text-gray-500 text-sm tracking-widest uppercase">Building the future of the web.</p>
             </div>
-            <div class="flex space-x-6 text-2xl">
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+            <div class="grid grid-cols-2 gap-20">
+                <div>
+                    <h4 class="font-black uppercase text-blue-500 mb-6 text-xs tracking-widest">Navigate</h4>
+                    <ul class="space-y-3 text-sm font-bold uppercase tracking-tight">
+                        <li><a href="#" class="hover:text-blue-500">Home</a></li>
+                        <li><a href="#portfolio" class="hover:text-blue-500">Projects</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black uppercase text-blue-500 mb-6 text-xs tracking-widest">Social</h4>
+                    <div class="flex space-x-6 text-xl">
+                        <a href="#" class="hover:text-blue-500"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-blue-500"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 text-xs text-gray-600 uppercase tracking-[0.3em]">
+            © 2026 Dai Dang / All rights reserved.
         </div>
     </footer>
 
     <script>
-        // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
             const logo = document.getElementById('nav-logo');
-            const links = document.querySelectorAll('.nav-link');
-            
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-white/80', 'backdrop-blur-lg', 'shadow-md', 'py-3');
-                navbar.classList.remove('py-4');
-                logo.classList.replace('text-white', 'text-gray-900');
-                links.forEach(link => link.classList.replace('text-white', 'text-gray-700'));
+            if (window.scrollY > 80) {
+                navbar.classList.add('nav-scrolled');
             } else {
-                navbar.classList.remove('bg-white/80', 'backdrop-blur-lg', 'shadow-md', 'py-3');
-                navbar.classList.add('py-4');
-                logo.classList.replace('text-gray-900', 'text-white');
-                links.forEach(link => link.classList.replace('text-gray-700', 'text-white'));
+                navbar.classList.remove('nav-scrolled');
             }
         });
 
-        // Mobile Menu Toggle
         function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('menu-hidden');
+            document.getElementById('mobile-menu').classList.toggle('menu-hidden');
         }
     </script>
 </body>
