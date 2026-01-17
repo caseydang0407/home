@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D8 Nursing Break Scheduler v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        
+        /* Print Styles */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .print-container { width: 100%; max-width: 100%; margin: 0; padding: 0; }
+            table { width: 100%; border-collapse: collapse; font-size: 11px; }
+            th, td { border: 1px solid #000; padding: 4px; text-align: left; }
+            h1 { font-size: 16px; margin-bottom: 5px; }
+            h2 { font-size: 12px; margin-bottom: 10px; }
+            .footer-note { font-size: 9px; margin-top: 5px; font-style: italic; }
+            .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; }
+            .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div id="app" class="min-h-screen flex flex-col items-center py-6 px-4">
+        
+        <header class="w-full max-w-6xl mb-6 text-center no-print">
+            <h1 class="text-3xl font-bold text-blue-700">D8 Nursing Break Scheduler</h1>
+            <p class="text-gray-500 mt-2 text-sm">
+                Logic: Break cannot be within 30 mins before/after Chemo.<br>
+                <i class="fas fa-exclamation-triangle text-red-500"></i> appears if conflict is unavoidable.
+            </p>
+        </header>
+
+        <div id="home-view" class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 transition-all border-t-4 border-blue-600">
+            <h2 class="text-xl font-semibold mb-4">Start New Shift</h2>
+            
+            <label class="block mb-2 font-medium">Date</label>
+            <input type="date" id="shiftDate" class="w-full p-3 border rounded-lg mb-4 bg-gray-50 text-lg">
+
+            <label class="block mb-2 font-medium">Number of Staff Nurses</label>
+            <select id="nurseCount" class="w-full p-3 border rounded-lg mb-6 bg-gray-50 text-lg">
+                <option value="12">12 Nurses</option>
+                <option value="13">13 Nurses</option>
+                <option value="14">14 Nurses</option>
+                <option value="15">15 Nurses</option>
+                <option value="16">16 Nurses</option>
+            </select>
+
+            <button onclick="goToInput()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition mb-4">
+                Start Assignment <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+
+            <div class="border-t pt-4 mt-2">
+                <p class="text-sm text-gray-500 mb-2">Or resume from a saved file:</p>
+                <input type="file" id="fileInput" accept=".json" class="hidden" onchange="handleFileUpload(this)">
+                <button onclick="document.getElementById('fileInput').click()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 rounded-lg shadow transition text-sm">
+                    <i class="fas fa-upload mr-2"></i> Load Saved File (.json)
+                </button>
+            </div>
+        </div>
+
+        <div id="input-view" class="w-full max-w-7xl hidden flex-col gap-6 no-print">
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-500">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-procedures mr-2"></i> Unit Status & Chemo Schedule</h3>
+                    <button type="button" onclick="clearAllChemo()" class="text-xs text-red-600 hover:underline">Clear All Times</button>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">Enter Chemo Administration times for each room below.</p>
+                
+                <div id="room-chemo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500 h-fit">
+                    <h3 class="text-lg font-bold mb-4">Break Champions</h3>
+                    <div class="flex flex-col gap-4">
+                        <div>
+                            <label class="text-xs uppercase font-bold text-gray-500">Break Champion 1 (Sec 1)</label>
+                            <input type="text" id="champ1Name" placeholder="Name" class="w-full p-2 border rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs uppercase font-bold text-gray-500">Break Champion 2 (Sec 2)</label>
+                            <input type="text" id="champ2Name" placeholder="Name" class="w-full p-2 border rounded mt-1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div id="nurse-inputs-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        </div>
+                </div>
+            </div>
+
+            <div class="fixed bottom-0 left-0 w-full bg-white border-t p-4 flex justify-between items-center shadow-lg z-50">
+                <button onclick="location.reload()" class="text-gray-500 hover:text-gray-700 font-medium">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                </button>
+                <div class="flex gap-3">
+                    <button onclick="saveDataToFile()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg shadow">
+                        <i class="fas fa-save mr-2"></i> Save Draft
+                    </button>
+                    <button onclick="calculateAssignments()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-8 rounded-lg shadow text-lg">
+                        ASSIGN BREAKS <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="h-16"></div> </div>
+
+        <div id="result-view" class="w-full max-w-5xl hidden bg-white shadow-xl p-8 rounded-lg print-container">
+            
+            <div class="border-b-2 border-black pb-4 mb-4 text-center">
+                <h1 class="text-2xl font-bold uppercase">D8 NURSING BREAK TIME <span id="displayDate"></span></h1>
+                <h2 class="text-gray-600 uppercase"><span id="displayCount"></span> STAFF NURSES AND 2 BREAK CHAMPIONS</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="bg-blue-100 p-2 font-bold border border-blue-300 text-center uppercase">
+                        Break Champion 1: <span id="resChamp1" class="text-blue-800"></span>
+                    </div>
+                    <table class="w-full mt-2 border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="border p-2 w-1/4">Time (AM & PM)</th>
+                                <th class="border p-2 w-1/3">Assigned Nurse</th>
+                                <th class="border p-2">Rooms</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team1Body"></tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="bg-green-100 p-2 font-bold border border-green-300 text-center uppercase">
+                        Break Champion 2: <span id="resChamp2" class="text-green-800"></span>
+                    </div>
+                    <table class="w-full mt-2 border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="border p-2 w-1/4">Time (AM & PM)</th>
+                                <th class="border p-2 w-1/3">Assigned Nurse</th>
+                                <th class="border p-2">Rooms</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team2Body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="conflict-warning-box" class="hidden mt-4 p-2 border border-red-500 bg-red-50 text-red-700 text-sm">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Note:</strong> Nurses marked with <span class="font-bold text-red-600">(!)</span> have Chemo schedules that conflict with all available break slots. Please review manually.
+            </div>
+
+            <div class="mt-8 border-t border-gray-300 pt-4 text-sm text-gray-700 space-y-1 footer-note">
+                <p><strong>*</strong> Day Shift HUSC takes break at 1145-1245 covered by Charge Nurse.</p>
+                <p><strong>*</strong> Break Champions are responsible for chores and being Support Nurses when able.</p>
+                <p><strong>*</strong> 1st 30 minute break must begin within 5 hours of start time.</p>
+                <p><strong>*</strong> Break Champion 2 wipes down BMT Medication room beginning, mid-day, and end of shift.</p>
+            </div>
+
+            <div class="mt-6 flex justify-center gap-4 no-print">
+                <button onclick="saveDataToFile()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                    <i class="fas fa-download mr-2"></i> Save Data
+                </button>
+                <button onclick="window.print()" class="bg-gray-800 text-white px-6 py-2 rounded hover:bg-black transition">
+                    <i class="fas fa-print mr-2"></i> Print Sheet
+                </button>
+                <button onclick="location.reload()" class="bg-gray-200 text-gray-800 px-6 py-2 rounded hover:bg-gray-300 transition">
+                    Start Over
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA CONSTANTS ---
+        const roomsSec1 = ["43-1", "43-2", "45-1", "45-2", "47-1", "47-2", "49", "51", "53-1", "53-2", "55-1", "55-2", "57", "59", "61-1", "61-2", "63", "65-1", "65-2"];
+        const roomsSec2 = ["67", "69", "71", "73", "75", "77", "79", "81", "83-1", "83-2", "85-1", "85-2", "87", "89-1", "89-2", "91"];
+        const allRooms = [...roomsSec1, ...roomsSec2].sort();
+
+        // Break Slots Structure
+        const slotsTeam1 = [
+            { label: "0800-0830 & 1215-1300", amStart: 800, amEnd: 830, pmStart: 1215, pmEnd: 1300, assigned: "Break Champion 1", fixed: true },
+            { label: "0830-0900 & 1300-1345", amStart: 830, amEnd: 900, pmStart: 1300, pmEnd: 1345, assigned: null },
+            { label: "0900-0930 & 1345-1430", amStart: 900, amEnd: 930, pmStart: 1345, pmEnd: 1430, assigned: null },
+            { label: "0930-1000 & 1430-1515", amStart: 930, amEnd: 1000, pmStart: 1430, pmEnd: 1515, assigned: null },
+            { label: "1000-1030 & 1515-1600", amStart: 1000, amEnd: 1030, pmStart: 1515, pmEnd: 1600, assigned: null },
+            { label: "1030-1100 & 1600-1645", amStart: 1030, amEnd: 1100, pmStart: 1600, pmEnd: 1645, assigned: null },
+            { label: "1100-1130 & 1645-1730", amStart: 1100, amEnd: 1130, pmStart: 1645, pmEnd: 1730, assigned: null },
+            { label: "1130-1200 & 1730-1815", amStart: 1130, amEnd: 1200, pmStart: 1730, pmEnd: 1815, assigned: null }
+        ];
+
+        const slotsTeam2 = [
+            { label: "0815-0845 & 1215-1300", amStart: 815, amEnd: 845, pmStart: 1215, pmEnd: 1300, assigned: "Break Champion 2", fixed: true },
+            { label: "0845-0915 & 1300-1345", amStart: 845, amEnd: 915, pmStart: 1300, pmEnd: 1345, assigned: null },
+            { label: "0845-0915 & 1345-1430", amStart: 845, amEnd: 915, pmStart: 1345, pmEnd: 1430, assigned: "Charge Nurse", fixed: true },
+            { label: "0915-0945 & 1345-1430", amStart: 915, amEnd: 945, pmStart: 1345, pmEnd: 1430, assigned: null },
+            { label: "0945-1015 & 1430-1515", amStart: 945, amEnd: 1015, pmStart: 1430, pmEnd: 1515, assigned: null },
+            { label: "1015-1045 & 1515-1600", amStart: 1015, amEnd: 1045, pmStart: 1515, pmEnd: 1600, assigned: null },
+            { label: "1045-1115 & 1600-1645", amStart: 1045, amEnd: 1115, pmStart: 1600, pmEnd: 1645, assigned: null },
+            { label: "1115-1145 & 1645-1730", amStart: 1115, amEnd: 1145, pmStart: 1645, pmEnd: 1730, assigned: null }
+        ];
+
+        let nurseCount = 0;
+
+        // --- NAVIGATION & UI BUILDER ---
+
+        function goToInput() {
+            const date = document.getElementById('shiftDate').value;
+            if(!date) { alert("Please pick a date"); return; }
+            
+            nurseCount = parseInt(document.getElementById('nurseCount').value);
+            
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('input-view').classList.remove('hidden');
+            document.getElementById('input-view').classList.add('flex');
+            
+            generateRoomInputs();
+            generateNurseInputs(nurseCount);
+        }
+
+        function generateRoomInputs() {
+            const container = document.getElementById('room-chemo-grid');
+            container.innerHTML = '';
+            
+            const timeOptions = generateTimeOptions();
+            
+            // NOTE: Using a safe ID format (replace dot/dash with underscore)
+            
+            allRooms.forEach(room => {
+                const safeRoomId = room.replace(/[-.]/g, '_');
+                const card = document.createElement('div');
+                card.className = "bg-gray-50 border border-gray-200 rounded p-2 flex flex-col";
+                card.innerHTML = `
+                    <div class="font-bold text-gray-700 text-center mb-1 bg-gray-200 rounded">${room}</div>
+                    <div class="flex gap-1">
+                        <select id="ct_${safeRoomId}_1" class="text-xs border rounded p-1 w-1/3 bg-white">${timeOptions}</select>
+                        <select id="ct_${safeRoomId}_2" class="text-xs border rounded p-1 w-1/3 bg-white">${timeOptions}</select>
+                        <select id="ct_${safeRoomId}_3" class="text-xs border rounded p-1 w-1/3 bg-white">${timeOptions}</select>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function generateNurseInputs(num) {
+            const container = document.getElementById('nurse-inputs-container');
+            container.innerHTML = '';
+            
+            for(let i=1; i<=num; i++) {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl shadow-md border border-gray-200";
+                
+                let roomSelectsHTML = '';
+                // 3 Room dropdowns per nurse (simplified - no chemo inputs)
+                for(let r=1; r<=3; r++) {
+                    roomSelectsHTML += `
+                        <select class="room-select w-full p-2 border rounded text-sm bg-gray-50 font-bold text-gray-700 mb-2" 
+                            id="n${i}r${r}" onchange="handleRoomSelection(this)">
+                            <option value="">Select Room ${r}</option>
+                            ${allRooms.map(rm => `<option value="${rm}">${rm}</option>`).join('')}
+                        </select>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-blue-800 text-lg">Staff Nurse ${i}</h4>
+                    </div>
+                    <input type="text" id="n${i}name" placeholder="Nurse Name" class="w-full mb-3 p-2 border-2 border-blue-100 rounded">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <label class="text-xs font-bold text-gray-400 uppercase mb-2 block">Assigned Rooms</label>
+                        ${roomSelectsHTML}
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function generateTimeOptions() {
+            let opts = '<option value="">--</option>';
+            for(let h=0; h<24; h++) {
+                let hh = h.toString().padStart(2, '0');
+                opts += `<option value="${hh}00">${hh}00</option>`;
+                opts += `<option value="${hh}15">${hh}15</option>`;
+                opts += `<option value="${hh}30">${hh}30</option>`;
+                opts += `<option value="${hh}45">${hh}45</option>`;
+            }
+            return opts;
+        }
+
+        function clearAllChemo() {
+            if(confirm("Are you sure you want to clear all Chemo times?")) {
+                const inputs = document.querySelectorAll('select[id^="ct_"]');
+                inputs.forEach(inp => inp.value = "");
+            }
+        }
+
+        // --- SAVE / LOAD SYSTEM ---
+        
+        function saveDataToFile() {
+            const exportData = {
+                date: document.getElementById('shiftDate').value,
+                nurseCount: document.getElementById('nurseCount').value,
+                champ1: document.getElementById('champ1Name').value,
+                champ2: document.getElementById('champ2Name').value,
+                chemoSchedule: {},
+                nurses: []
+            };
+
+            // 1. Save Chemo Schedule
+            allRooms.forEach(room => {
+                const safeRoomId = room.replace(/[-.]/g, '_');
+                exportData.chemoSchedule[room] = [
+                    document.getElementById(`ct_${safeRoomId}_1`).value,
+                    document.getElementById(`ct_${safeRoomId}_2`).value,
+                    document.getElementById(`ct_${safeRoomId}_3`).value
+                ];
+            });
+
+            // 2. Save Nurses
+            const count = parseInt(exportData.nurseCount || 0);
+            for(let i=1; i<=count; i++) {
+                exportData.nurses.push({
+                    id: i,
+                    name: document.getElementById(`n${i}name`)?.value || "",
+                    rooms: [
+                        document.getElementById(`n${i}r1`)?.value || "",
+                        document.getElementById(`n${i}r2`)?.value || "",
+                        document.getElementById(`n${i}r3`)?.value || ""
+                    ]
+                });
+            }
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `D8-Schedule-${exportData.date || 'Unsaved'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    loadDataToForm(data);
+                } catch (err) {
+                    alert("Error loading file.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function loadDataToForm(data) {
+            document.getElementById('shiftDate').value = data.date;
+            document.getElementById('nurseCount').value = data.nurseCount;
+            nurseCount = parseInt(data.nurseCount);
+            goToInput(); // Generate HTML
+
+            document.getElementById('champ1Name').value = data.champ1;
+            document.getElementById('champ2Name').value = data.champ2;
+
+            // Load Chemo Schedule
+            if(data.chemoSchedule) {
+                for (const [room, times] of Object.entries(data.chemoSchedule)) {
+                    const safeRoomId = room.replace(/[-.]/g, '_');
+                    if(document.getElementById(`ct_${safeRoomId}_1`)) {
+                        document.getElementById(`ct_${safeRoomId}_1`).value = times[0];
+                        document.getElementById(`ct_${safeRoomId}_2`).value = times[1];
+                        document.getElementById(`ct_${safeRoomId}_3`).value = times[2];
+                    }
+                }
+            }
+
+            // Load Nurses
+            data.nurses.forEach(n => {
+                const nameInput = document.getElementById(`n${n.id}name`);
+                if(nameInput) nameInput.value = n.name;
+                
+                n.rooms.forEach((r, idx) => {
+                    const rInput = document.getElementById(`n${n.id}r${idx+1}`);
+                    if(rInput) rInput.value = r;
+                });
+            });
+
+            updateAvailableRooms();
+            alert("File Loaded Successfully!");
+        }
+
+        // --- INTERACTIVITY ---
+        function handleRoomSelection(selectEl) {
+            updateAvailableRooms();
+        }
+
+        function updateAvailableRooms() {
+            const allSelects = document.querySelectorAll('.room-select');
+            const selectedValues = Array.from(allSelects).map(s => s.value).filter(v => v);
+
+            allSelects.forEach(sel => {
+                const currentVal = sel.value;
+                Array.from(sel.options).forEach(opt => {
+                    if (opt.value === "") return;
+                    if (selectedValues.includes(opt.value) && opt.value !== currentVal) {
+                        opt.disabled = true;
+                        opt.innerText = opt.value + " (Taken)";
+                    } else {
+                        opt.disabled = false;
+                        opt.innerText = opt.value;
+                    }
+                });
+            });
+        }
+
+        // --- MAIN LOGIC ENGINE ---
+        function toMins(timeInt) {
+            return Math.floor(timeInt / 100) * 60 + (timeInt % 100);
+        }
+
+        // Helper to grab chemo times for a specific room from the big grid
+        function getChemoTimesForRoom(roomName) {
+            const safeRoomId = roomName.replace(/[-.]/g, '_');
+            const t1 = document.getElementById(`ct_${safeRoomId}_1`).value;
+            const t2 = document.getElementById(`ct_${safeRoomId}_2`).value;
+            const t3 = document.getElementById(`ct_${safeRoomId}_3`).value;
+            
+            let times = [];
+            [t1, t2, t3].forEach(val => {
+                if(val) {
+                    let hh = parseInt(val.substring(0,2));
+                    let mm = parseInt(val.substring(2,4));
+                    times.push(hh*60 + mm);
+                }
+            });
+            return times;
+        }
+
+        function calculateAssignments() {
+            let nurses = [];
+            for(let i=1; i<=nurseCount; i++) {
+                let name = document.getElementById(`n${i}name`).value || `Nurse ${i}`;
+                let rooms = [];
+                let chemoTimes = []; 
+                
+                // Get rooms assigned to this nurse
+                for(let r=1; r<=3; r++) {
+                    let roomVal = document.getElementById(`n${i}r${r}`).value;
+                    if(roomVal) {
+                        rooms.push(roomVal);
+                        // LOOK UP CHEMO TIMES FROM MAIN BOARD
+                        const roomTimes = getChemoTimesForRoom(roomVal);
+                        chemoTimes = [...chemoTimes, ...roomTimes];
+                    }
+                }
+
+                // Determine Team
+                let sec1Count = 0;
+                let sec2Count = 0;
+                rooms.forEach(rm => {
+                    if(roomsSec1.includes(rm)) sec1Count++;
+                    if(roomsSec2.includes(rm)) sec2Count++;
+                });
+
+                let team = 0; 
+                if(sec1Count > sec2Count) team = 1;
+                else if(sec2Count > sec1Count) team = 2;
+                else team = 0; 
+
+                nurses.push({ id: i, name, rooms, chemoTimes, team, assigned: false, conflictAlert: false });
+            }
+
+            // Reset Slots
+            const resetSlots = (arr) => arr.forEach(s => { if(!s.fixed) { s.assigned = null; s.alert = false; } });
+            resetSlots(slotsTeam1);
+            resetSlots(slotsTeam2);
+
+            // Sort by difficulty
+            nurses.sort((a,b) => b.chemoTimes.length - a.chemoTimes.length);
+
+            // Assign
+            nurses.forEach(nurse => {
+                if(nurse.team === 1) assignToTeam(nurse, slotsTeam1);
+                else if(nurse.team === 2) assignToTeam(nurse, slotsTeam2);
+            });
+
+            // Floating
+            nurses.filter(n => !n.assigned).forEach(nurse => {
+                if(!assignToTeam(nurse, slotsTeam1)) {
+                    assignToTeam(nurse, slotsTeam2);
+                }
+            });
+
+            // Force Assign
+            const unassigned = nurses.filter(n => !n.assigned);
+            if(unassigned.length > 0) {
+                unassigned.forEach(nurse => {
+                    let forced = forceAssign(nurse, slotsTeam1);
+                    if(!forced) forced = forceAssign(nurse, slotsTeam2);
+                });
+            }
+
+            renderResults();
+        }
+
+        function assignToTeam(nurse, slotsArray) {
+            for(let slot of slotsArray) {
+                if(slot.assigned !== null) continue; 
+                if(!checkConflict(nurse, slot)) {
+                    slot.assigned = nurse.name;
+                    slot.rooms = nurse.rooms.join(', ');
+                    slot.alert = false;
+                    nurse.assigned = true;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function forceAssign(nurse, slotsArray) {
+            for(let slot of slotsArray) {
+                if(slot.assigned !== null) continue;
+                slot.assigned = nurse.name;
+                slot.rooms = nurse.rooms.join(', ');
+                slot.alert = true;
+                nurse.assigned = true;
+                nurse.conflictAlert = true;
+                return true;
+            }
+            return false;
+        }
+
+        function checkConflict(nurse, slot) {
+            let amStart = toMins(slot.amStart);
+            let amEnd = toMins(slot.amEnd);
+            let pmStart = toMins(slot.pmStart);
+            let pmEnd = toMins(slot.pmEnd);
+
+            for(let cTime of nurse.chemoTimes) {
+                let forbiddenStart = cTime - 30;
+                let forbiddenEnd = cTime + 30;
+                if(amStart < forbiddenEnd && forbiddenStart < amEnd) return true;
+                if(pmStart < forbiddenEnd && forbiddenStart < pmEnd) return true;
+            }
+            return false;
+        }
+
+        function renderResults() {
+            document.getElementById('input-view').classList.remove('flex');
+            document.getElementById('input-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+
+            document.getElementById('displayDate').innerText = document.getElementById('shiftDate').value;
+            document.getElementById('displayCount').innerText = nurseCount;
+            document.getElementById('resChamp1').innerText = document.getElementById('champ1Name').value || "Not Assigned";
+            document.getElementById('resChamp2').innerText = document.getElementById('champ2Name').value || "Not Assigned";
+
+            let hasConflicts = false;
+
+            const renderTable = (slots, bodyId) => {
+                const tbody = document.getElementById(bodyId);
+                tbody.innerHTML = '';
+                slots.forEach(slot => {
+                    let assignedText = slot.assigned || "<span class='text-gray-400 italic'>Unassigned</span>";
+                    let roomsText = slot.rooms || "-";
+                    let rowClass = slot.fixed ? "bg-gray-50 text-gray-500 italic" : "";
+                    
+                    if(slot.fixed) { roomsText = "N/A"; }
+
+                    if(slot.alert) {
+                        assignedText += ` <span class="text-red-600 font-bold ml-2 text-lg" title="Chemo Conflict!"><i class="fas fa-exclamation-triangle"></i> (!)</span>`;
+                        rowClass = "bg-red-50 border-red-200";
+                        hasConflicts = true;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td class="border p-2 font-mono whitespace-nowrap">${slot.label}</td>
+                            <td class="border p-2 font-bold">${assignedText}</td>
+                            <td class="border p-2 text-xs">${roomsText}</td>
+                        </tr>
+                    `;
+                });
+            };
+
+            renderTable(slotsTeam1, 'team1Body');
+            renderTable(slotsTeam2, 'team2Body');
+
+            if(hasConflicts) {
+                document.getElementById('conflict-warning-box').classList.remove('hidden');
+            } else {
+                document.getElementById('conflict-warning-box').classList.add('hidden');
+            }
+        }
+
+    </script>
+</body>
+</html>
