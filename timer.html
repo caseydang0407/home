@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEETING TIME KEEPER - By Dai Dang</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --accent-red: #ff3e3e;
+            --accent-green: #00ff88;
+            --accent-blue: #00a2ff;
+            --gray-dark: #121212;
+            --gray-light: #2c2c2c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        .hidden { display: none !important; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:hover { filter: brightness(1.2); }
+        .btn-primary { background: var(--accent-blue); color: white; }
+        .btn-secondary { background: var(--gray-light); color: white; }
+        .btn-danger { background: var(--accent-red); color: white; }
+        .btn-success { background: var(--accent-green); color: #000; }
+
+        .sync-panel { background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+        .status-online { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+
+        #landing-page { padding: 2rem; overflow-y: auto; max-width: 800px; margin: 0 auto; width: 100%; }
+        .setup-card { background: var(--gray-dark); padding: 1.5rem; border-radius: 12px; border: 1px solid #333; margin-bottom: 1rem; }
+        
+        #timer-page { display: flex; flex-direction: column; height: 100vh; padding: 1rem; }
+        .header-ui { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #222; }
+        
+        #global-timer { font-size: 8rem; font-weight: 800; font-family: 'Courier New', monospace; text-align: center; }
+        .overtime-red { color: var(--accent-red) !important; text-shadow: 0 0 25px rgba(255, 62, 62, 0.5); }
+
+        .main-layout { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 1rem; flex-grow: 1; overflow: hidden; margin-top: 1rem; }
+        .col { background: var(--gray-dark); border-radius: 12px; padding: 1.5rem; border: 1px solid #222; display: flex; flex-direction: column; overflow-y: auto; }
+        
+        .topic-item { padding: 15px; margin-bottom: 8px; background: #1a1a1a; border-radius: 8px; cursor: grab; border-left: 5px solid transparent; display: flex; justify-content: space-between; align-items: center; }
+        .active-topic { border-left-color: var(--accent-blue); background: #1e272e; }
+        .topic-timer-pill { padding: 4px 10px; border-radius: 4px; font-family: monospace; font-weight: bold; background: #000; min-width: 80px; text-align: center; border: 1px solid #333; }
+        .pill-overtime { color: var(--accent-red); border-color: var(--accent-red); }
+
+        textarea { flex-grow:1; background:#000; color:var(--accent-green); border:1px solid #333; padding:15px; font-size: 1.1rem; line-height: 1.6; border-radius: 8px; resize: none; }
+
+        #report-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; overflow-y: auto; padding: 40px; }
+        .report-paper { background: #fff; color: #000; max-width: 850px; margin: 0 auto; padding: 50px; border-radius: 4px; }
+        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .report-table th, .report-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1><i class="fas fa-clock"></i> Meeting Setup</h1>
+            <div class="sync-panel">
+                <div id="join-status-dot" class="status-dot"></div>
+                <input type="text" id="join-id" placeholder="Host Peer ID" style="background:#000; color:white; border:1px solid #444; padding:5px; border-radius:4px; width: 120px;">
+                <button class="btn btn-primary" style="padding: 5px 12px;" onclick="initSync(true)">JOIN</button>
+            </div>
+        </div>
+        
+        <div class="setup-card">
+            <label style="font-size: 0.8rem; color: #888;">MEETING TITLE</label>
+            <input type="text" id="setup-title" placeholder="Union Meeting 101 - Jan 1, 2026" style="width:100%; padding:12px; margin-top:5px; background:#000; color:white; border:1px solid #444; border-radius:6px;">
+        </div>
+
+        <div id="topics-wrapper"></div>
+        <div style="text-align: center; margin: 20px;"><button class="btn btn-secondary" onclick="addTopicRow()"><i class="fas fa-plus"></i> Add Topic</button></div>
+
+        <div style="display: flex; justify-content: center; gap: 15px; padding-top: 25px; border-top: 1px solid #333;">
+            <button class="btn btn-secondary" onclick="document.getElementById('file-loader').click()"><i class="fas fa-file-import"></i> Load Config</button>
+            <button class="btn btn-secondary" onclick="handleSaveConfig()"><i class="fas fa-save"></i> Save Config</button>
+            <button class="btn btn-primary" onclick="launchMeeting()"><i class="fas fa-rocket"></i> LAUNCH TIMER</button>
+        </div>
+    </div>
+
+    <div id="timer-page" class="hidden">
+        <div class="header-ui">
+            <div id="display-title" style="font-size: 1.8rem; font-weight: 800; color: var(--accent-blue);"></div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="sync-status-area" class="sync-panel">
+                    <div id="host-status-dot" class="status-dot"></div>
+                    <button id="start-sync-btn" class="btn btn-secondary" style="padding: 5px 12px;" onclick="initSync(false)">START BROADCASTING</button>
+                </div>
+                <button class="btn btn-secondary" onclick="toggleFS()"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 15px 0;">
+            <div id="global-timer">00:00:00</div>
+            <div id="status-bar" style="font-weight: 800; padding: 10px 25px; border-radius: 30px; display: inline-block; font-size: 1.2rem; background: #111;"></div>
+        </div>
+
+        <div class="main-layout">
+            <div class="col">
+                <h3><i class="fas fa-grip-vertical"></i> Agenda</h3>
+                <div id="agenda-list" style="margin-top:15px;"></div>
+            </div>
+            <div class="col">
+                <h3><i class="fas fa-list-ul"></i> Sub-topics</h3>
+                <div id="sub-list" style="margin-top:15px;"></div>
+            </div>
+            <div class="col">
+                <h3><i class="fas fa-pen"></i> Live Notes</h3>
+                <textarea id="live-notes" placeholder="Meeting notes will be here..." oninput="broadcast()"></textarea>
+            </div>
+        </div>
+
+        <div class="header-ui" style="border-top: 1px solid #222; padding: 20px;">
+            <div>
+                <button class="btn btn-secondary" onclick="adjTime(-60)"><i class="fas fa-plus"></i> 1m</button>
+                <button class="btn btn-secondary" onclick="adjTime(60)"><i class="fas fa-minus"></i> 1m</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="play-btn" onclick="toggleClock()"><i class="fas fa-play"></i> START</button>
+                <button class="btn btn-danger" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> EXIT</button>
+            </div>
+            <button class="btn btn-success" onclick="openReport()"><i class="fas fa-file-invoice"></i> REPORT</button>
+        </div>
+    </div>
+
+    <div id="report-modal" class="hidden">
+        <div class="report-paper" id="report-content">
+            <h1 id="r-title">Meeting Report</h1>
+            <p id="r-date" style="color: #666; margin-bottom: 20px;"></p>
+            <table class="report-table" id="r-table"></table>
+            <div style="height: 300px; margin-top: 30px;"><canvas id="r-chart"></canvas></div>
+            <div id="r-notes" style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-left: 5px solid var(--accent-blue); white-space: pre-wrap;"></div>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn btn-secondary" onclick="document.getElementById('report-modal').classList.add('hidden')">Back</button>
+            <button class="btn btn-success" onclick="savePDF()"><i class="fas fa-file-pdf"></i> EXPORT PDF</button>
+        </div>
+    </div>
+
+    <input type="file" id="file-loader" class="hidden">
+
+    <script>
+        let config = { title: "", topics: [] };
+        let session = { isRunning: false, activeIdx: 0, viewIdx: 0, elapsed: 0, timer: null };
+        let peer = null, conn = null, isClient = false;
+        let myChart = null;
+
+        // SYNC
+        function initSync(asClient) {
+            if (peer) peer.destroy();
+            peer = new Peer();
+            peer.on('open', id => {
+                if(asClient) {
+                    const hostId = document.getElementById('join-id').value.trim();
+                    if(!hostId) return;
+                    conn = peer.connect(hostId);
+                    setupConnection();
+                } else {
+                    document.getElementById('sync-status-area').innerHTML = `<div class="status-dot status-online"></div> ID: <strong style="color:var(--accent-blue)">${id}</strong>`;
+                }
+            });
+            peer.on('connection', c => { conn = c; setupConnection(); setTimeout(broadcast, 500); });
+        }
+
+        function setupConnection() {
+            conn.on('open', () => document.querySelectorAll('.status-dot').forEach(d => d.classList.add('status-online')));
+            conn.on('data', data => {
+                isClient = true; config = data.config; session = data.session;
+                document.getElementById('live-notes').value = data.notes || "";
+                document.getElementById('landing-page').classList.add('hidden');
+                document.getElementById('timer-page').classList.remove('hidden');
+                document.getElementById('display-title').textContent = config.title;
+                refreshUI();
+            });
+        }
+
+        function broadcast() { if(conn && conn.open && !isClient) conn.send({ config, session, notes: document.getElementById('live-notes').value }); }
+
+        // DRAG & DROP
+        Sortable.create(document.getElementById('agenda-list'), {
+            animation: 150,
+            onEnd: (evt) => {
+                const item = config.topics.splice(evt.oldIndex, 1)[0];
+                config.topics.splice(evt.newIndex, 0, item);
+                if(session.activeIdx === evt.oldIndex) session.activeIdx = evt.newIndex;
+                refreshUI(); broadcast();
+            }
+        });
+
+        // SAVE & LOAD
+        function handleSaveConfig() {
+            const data = { title: document.getElementById('setup-title').value, topics: [] };
+            document.querySelectorAll('#topics-wrapper .setup-card').forEach(card => {
+                const subs = []; card.querySelectorAll('.s-name').forEach(sn => subs.push({title: sn.value}));
+                data.topics.push({ title: card.querySelector('.t-name').value, planned: (parseInt(card.querySelector('.t-time').value)||0)*60, subs: subs });
+            });
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], {type:'application/json'});
+            triggerDownload(blob, (data.title || "agenda") + ".json");
+        }
+
+        function triggerDownload(blob, filename) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        document.getElementById('file-loader').onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const loaded = JSON.parse(ev.target.result);
+                document.getElementById('setup-title').value = loaded.title || "";
+                document.getElementById('topics-wrapper').innerHTML = '';
+                loaded.topics.forEach(t => addTopicRow(t.title, t.planned/60, t.subs));
+            };
+            reader.readAsText(e.target.files[0]);
+        };
+
+        // UI HELPERS
+        function addTopicRow(t="", d=10, s=[]) {
+            const wrap = document.getElementById('topics-wrapper');
+            const div = document.createElement('div');
+            div.className = 'setup-card';
+            div.innerHTML = `<div style="display:flex; gap:10px; margin-bottom:10px;"><input type="text" class="t-name" placeholder="Topic" value="${t}" style="flex:1; padding:10px; background:#000; color:white; border:1px solid #444;"><input type="number" class="t-time" value="${d}" style="width:65px; padding:10px; background:#000; color:white; border:1px solid #444;"><button class="btn btn-secondary" onclick="addSub(this)"><i class="fas fa-indent"></i></button><button class="btn btn-danger" onclick="this.closest('.setup-card').remove()">×</button></div><div class="sub-container"></div>`;
+            wrap.appendChild(div);
+            s.forEach(sub => addSub(div.querySelector('.btn-secondary'), sub.title));
+        }
+
+        function addSub(btn, val="") {
+            const container = btn.closest('.setup-card').querySelector('.sub-container');
+            const d = document.createElement('div');
+            d.style = "margin: 5px 0 5px 40px; display:flex; gap:5px;";
+            d.innerHTML = `<input type="text" class="s-name" value="${val}" placeholder="Sub-topic" style="flex:1; padding:8px; background:#000; color:#ccc; border:1px solid #333; font-size:0.9rem;"><button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>`;
+            container.appendChild(d);
+        }
+
+        function launchMeeting() {
+            config.title = document.getElementById('setup-title').value || "Meeting";
+            config.topics = [];
+            document.querySelectorAll('#topics-wrapper .setup-card').forEach(card => {
+                const subs = []; card.querySelectorAll('.s-name').forEach(sn => subs.push({title: sn.value}));
+                config.topics.push({ title: card.querySelector('.t-name').value, planned: (parseInt(card.querySelector('.t-time').value)||0)*60, actual: 0, subs: subs, done: false });
+            });
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('timer-page').classList.remove('hidden');
+            document.getElementById('display-title').textContent = config.title;
+            refreshUI();
+        }
+
+        function toggleClock() {
+            const btn = document.getElementById('play-btn');
+            if(session.isRunning) {
+                clearInterval(session.timer); session.isRunning = false;
+                btn.innerHTML = '<i class="fas fa-play"></i> START';
+            } else {
+                session.isRunning = true;
+                btn.innerHTML = '<i class="fas fa-pause"></i> PAUSE';
+                session.timer = setInterval(() => {
+                    session.elapsed++;
+                    if(config.topics[session.activeIdx]) config.topics[session.activeIdx].actual++;
+                    refreshUI();
+                    if(session.elapsed % 2 === 0) broadcast();
+                }, 1000);
+            }
+        }
+
+        function refreshUI() {
+            const totalPlanned = config.topics.reduce((a,b) => a + (b.planned || 0), 0);
+            const remaining = totalPlanned - session.elapsed;
+            const timerEl = document.getElementById('global-timer');
+            timerEl.textContent = fmt(remaining);
+            timerEl.className = remaining < 0 ? 'overtime-red' : '';
+
+            const status = document.getElementById('status-bar');
+            const curr = config.topics[session.activeIdx];
+            if(curr) {
+                const diff = curr.planned - curr.actual;
+                status.textContent = diff < 0 ? `OVERTIME: ${fmt(Math.abs(diff))}` : `REMAINING: ${fmt(diff)}`;
+                status.style.color = diff < 0 ? 'var(--accent-red)' : 'var(--accent-green)';
+            }
+
+            const list = document.getElementById('agenda-list');
+            list.innerHTML = '';
+            config.topics.forEach((t, i) => {
+                const tRem = t.planned - t.actual;
+                const item = document.createElement('div');
+                item.className = `topic-item ${i === session.activeIdx ? 'active-topic' : ''}`;
+                item.innerHTML = `<span><input type="checkbox" ${t.done?'checked':''} onchange="check(${i})"> ${t.title}</span><div class="topic-timer-pill ${tRem < 0 ? 'pill-overtime' : ''}">${fmt(Math.abs(tRem))}</div>`;
+                item.onclick = (e) => { if(e.target.type !== 'checkbox') { session.viewIdx = i; refreshUI(); } };
+                list.appendChild(item);
+            });
+
+            const subs = document.getElementById('sub-list');
+            subs.innerHTML = '';
+            config.topics[session.viewIdx]?.subs.forEach(s => {
+                subs.innerHTML += `<div style="padding:12px; border-left:3px solid #444; margin:10px 0 0 20px; color:#aaa; background:#0a0a0a;">• ${s.title}</div>`;
+            });
+        }
+
+        function check(i) {
+            config.topics[i].done = !config.topics[i].done;
+            if(config.topics[i].done && i === session.activeIdx) session.activeIdx++;
+            refreshUI(); broadcast();
+        }
+
+        function openReport() {
+            document.getElementById('report-modal').classList.remove('hidden');
+            document.getElementById('r-title').textContent = config.title;
+            document.getElementById('r-date').textContent = new Date().toLocaleString();
+            document.getElementById('r-notes').textContent = document.getElementById('live-notes').value || "No notes.";
+
+            const table = document.getElementById('r-table');
+            table.innerHTML = `<tr><th>Topic</th><th>Planned (min)</th><th>Actual (min)</th></tr>`;
+            const labels = [], pData = [], aData = [];
+            config.topics.forEach(t => {
+                labels.push(t.title);
+                pData.push(Math.round(t.planned / 60));
+                aData.push(Math.round(t.actual / 60));
+                table.innerHTML += `<tr><td>${t.title}</td><td>${Math.round(t.planned/60)}m</td><td>${Math.round(t.actual/60)}m</td></tr>`;
+            });
+
+            setTimeout(() => {
+                const ctx = document.getElementById('r-chart').getContext('2d');
+                if(myChart) myChart.destroy();
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Planned', data: pData, backgroundColor: '#00a2ff' }, { label: 'Actual', data: aData, backgroundColor: '#ff3e3e' }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }, 300);
+        }
+
+        async function savePDF() {
+            const canvas = await html2canvas(document.getElementById('report-content'), { scale: 2 });
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const w = pdf.internal.pageSize.getWidth();
+            const h = (canvas.height * w) / canvas.width;
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
+            pdf.save(config.title + "_Report.pdf");
+        }
+
+        function fmt(s) {
+            const a = Math.abs(s);
+            const m = Math.floor(a/60), sc = a%60;
+            return `${s < 0 ? '+' : ''}${m}:${sc.toString().padStart(2,'0')}`;
+        }
+
+        function adjTime(v) { 
+            session.elapsed += v; 
+            if(config.topics[session.activeIdx]) config.topics[session.activeIdx].actual += v;
+            refreshUI(); broadcast(); 
+        }
+        
+        function toggleFS() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+
+        addTopicRow();
+    </script>
+</body>
+</html>
