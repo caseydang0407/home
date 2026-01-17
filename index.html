@@ -87,17 +87,44 @@
         .no-scroll {
             overflow: hidden;
         }
+
+        /* Ensure the mobile menu slides from the right */
+        #mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-hidden {
+            transform: translateX(100%);
+        }
+
+        /* Optional: Smooth transition for the accordion */
+        #mobile-projects-menu {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
 
-<div id="mobile-menu" class="fixed inset-0 bg-[#111827] z-[100] flex flex-col items-center justify-center space-y-8 text-white text-2xl font-black uppercase tracking-tighter menu-hidden lg:hidden">
-    <button class="absolute top-10 right-10 text-4xl" onclick="toggleMenu()">&times;</button>
-    <a href="#" onclick="toggleMenu()">Home</a>
-    <a href="#process" onclick="toggleMenu()">Process</a>
-    <a href="#portfolio" onclick="toggleMenu()">Projects</a>
-    <a href="#faq" onclick="toggleMenu()">FAQ</a>
-    <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-3 text-sm">Work With Me</a>
+<div id="mobile-menu" class="fixed inset-0 bg-[#111827] z-[100] flex flex-col p-10 text-white menu-hidden lg:hidden overflow-y-auto">
+    <button class="self-end text-4xl mb-10" onclick="toggleMenu()">&times;</button>
+    
+    <nav class="flex flex-col space-y-6 text-2xl font-black uppercase tracking-tighter">
+        <a href="#" onclick="toggleMenu()">Home</a>
+        
+        <div>
+            <button onclick="toggleMobileSubmenu()" class="flex items-center justify-between w-full uppercase">
+                Projects <i id="mobile-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
+            </button>
+            <div id="mobile-projects-menu" class="hidden flex-col space-y-4 mt-6 pl-4 border-l-2 border-blue-600">
+                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Web Systems</a>
+                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Mobile Apps</a>
+                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Cyber Security</a>
+            </div>
+        </div>
+        <a href="#process" onclick="toggleMenu()">Process</a>
+        <a href="#faq" onclick="toggleMenu()">FAQ</a>
+        <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-4 text-center text-sm mt-4">Work With Me</a>
+    </nav>
 </div>
 
 <header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
@@ -315,6 +342,23 @@
         function toggleMenu() {
             document.getElementById('mobile-menu').classList.toggle('menu-hidden');
         }
+
+        // Toggle Mobile Menu
+    function toggleMobileSubmenu() {
+    const menu = document.getElementById('mobile-projects-menu');
+    const chevron = document.getElementById('mobile-chevron');
+    
+    // Toggle visibility
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
     </script>
 </body>
 </html>
