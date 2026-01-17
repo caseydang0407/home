@@ -53,9 +53,10 @@
         }
 
         /* FAQ Transition */
-        .faq-content { max-height: 0; overflow: hidden; transition: all 0.3s ease-out; }
-        .faq-item.active .faq-content { max-height: 300px; padding-bottom: 1.5rem; }
-        .faq-item.active i { transform: rotate(180deg); color: #2563eb; }
+        .faq-card { background: white; border: 1px solid #e5e7eb; transition: all 0.4s ease; }
+        .faq-item.active .faq-answer { max-height: 200px; opacity: 1; padding-top: 1rem; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: #2563eb; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s; opacity: 0; }
 
         .view-btn {
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
@@ -225,27 +226,20 @@
         </div>
     </section>
 
-    <section id="faq" class="py-32 px-6 bg-gray-100">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-4xl font-black uppercase text-center mb-16 tracking-tighter">Support & Intel</h2>
-            <div class="space-y-4">
-                <div class="faq-item faq-card p-8 cursor-pointer" onclick="this.classList.toggle('active')">
-                    <div class="p-6 flex justify-between items-center">
-                        <span class="font-black uppercase tracking-tight">How long does a project take?</span>
-                        <i class="fas fa-chevron-down transition-transform"></i>
+        <section id="faq" class="py-32 px-6 bg-gray-50">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-4xl font-black uppercase tracking-tighter mb-16">Technical / <span class="text-blue-600">Intel</span></h2>
+                <div class="space-y-4">
+                    <div class="faq-item faq-card p-8 cursor-pointer" onclick="this.classList.toggle('active')">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-black uppercase text-sm tracking-widest">What is your typical lead time?</h4>
+                            <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+                        </div>
+                        <div class="faq-answer text-gray-500 text-sm leading-relaxed">Industrial deployments take 6 to 10 weeks on average.</div>
                     </div>
-                    <div class="faq-content px-6 text-gray-600 text-sm italic">Typically 4-8 weeks for industrial digital applications.</div>
-                </div>
-                <div class="faq-item faq-card p-8 cursor-pointer" onclick="this.classList.toggle('active')">
-                    <div class="p-6 flex justify-between items-center">
-                        <span class="font-black uppercase tracking-tight">Do you offer support?</span>
-                        <i class="fas fa-chevron-down transition-transform"></i>
-                    </div>
-                    <div class="faq-content px-6 text-gray-600 text-sm italic">Yes, 24/7 technical monitoring is available for enterprise builds.</div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
         <footer class="bg-[#05080f] text-white pt-32 pb-12 px-6">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
