@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dai Dang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        
+    /* This forces the video to fill the container without stretching distortion */
+    .video-docker video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover; /* This is the "magic" property */
+    }
+
+        /* Scrolled Navbar State */
+        .nav-scrolled {
+            background-color: #111827 !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            border-bottom: 4px solid #2563eb;
+        }
+
+        /* Ensure the parent can contain the absolute child */
+        .nav-group {
+            position: static; /* This allows the mega menu to align to the header, not the link */
+        }
+
+        .mega-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Sits exactly at the bottom of the header */
+            left: 0;
+            width: 100vw;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-top: 4px solid #2563eb;
+            z-index: 1000;
+        }
+
+        /* Hover logic */
+        .nav-group:hover .mega-menu {
+            display: block;
+            animation: navFade 0.3s ease-out;
+        }
+
+        /* Group hover ensures the menu stays open while moving mouse down */
+        .nav-group:hover .mega-menu {
+            display: block;
+            animation: navFade 0.3s ease-out;
+        }
+
+        @keyframes navFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FAQ Transition */
+        .faq-card { background: white; border: 1px solid #e5e7eb; transition: all 0.4s ease; }
+        .faq-item.active .faq-answer { max-height: 200px; opacity: 1; padding-top: 1rem; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: #2563eb; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s; opacity: 0; }
+
+        .view-btn {
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: all 0.3s ease;
+        }
+        .view-btn:hover { clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%); }
+
+        #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .menu-hidden { transform: translateX(100%); }
+        
+        /* Ensure the mega menu takes up the full width of the viewport */
+        .mega-menu {
+            left: 0;
+            right: 0;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%); /* Centers it back if the parent container is limited */
+        }
+
+        /* Add a helper to prevent body scroll when mobile menu is open */
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        /* Ensure the mobile menu slides from the right */
+        #mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-hidden {
+            transform: translateX(100%);
+        }
+
+        /* Optional: Smooth transition for the accordion */
+        #mobile-projects-menu {
+            transition: all 0.3s ease-in-out;
+            <div id="mobile-projects-menu" class="hidden flex-col space-y-8 mt-6 pl-4 border-l-2 border-blue-600">
+    <div>
+        <h4 class="text-xs font-black uppercase tracking-widest text-blue-500 mb-3">Web Systems</h4>
+        <div class="flex flex-col space-y-3 pl-2">
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Enterprise Portals</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">SaaS Dashboards</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Cloud Integrations</a>
+        </div>
+    </div>
+
+    <div>
+        <h4 class="text-xs font-black uppercase tracking-widest text-blue-500 mb-3">Mobile Apps</h4>
+        <div class="flex flex-col space-y-3 pl-2">
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">iOS Engineering</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Android Frameworks</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">React Native</a>
+        </div>
+    </div>
+
+    <div>
+        <h4 class="text-xs font-black uppercase tracking-widest text-blue-500 mb-3">Cyber Security</h4>
+        <div class="flex flex-col space-y-3 pl-2">
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Penetration Testing</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Data Encryption</a>
+            <a href="#portfolio" class="text-sm text-gray-400 hover:text-white transition">Network Audits</a>
+        </div>
+    </div>
+    </div>
+        }
+    </style>
+</head>
+<body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
+
+<div id="mobile-menu" class="fixed inset-0 bg-[#111827] z-[100] flex flex-col p-10 text-white menu-hidden lg:hidden overflow-y-auto">
+    <button class="self-end text-4xl mb-10" onclick="toggleMenu()">&times;</button>
+    
+    <nav class="flex flex-col space-y-6 text-2xl font-black uppercase tracking-tighter">
+        <a href="#" onclick="toggleMenu()">Home</a>
+        
+        <div>
+            <button onclick="toggleMobileSubmenu('mobile-projects-menu', 'main-chevron')" class="flex items-center justify-between w-full uppercase">
+                Projects <i id="main-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
+            </button>
+            
+            <div id="mobile-projects-menu" class="hidden flex-col space-y-6 mt-6 pl-4 border-l-2 border-blue-600">
+                
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-web', 'chev-web')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Web Systems <i id="chev-web" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-web" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">Enterprise Portals</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">SaaS Dashboards</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Cloud Integrations</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-mobile', 'chev-mobile')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Mobile Apps <i id="chev-mobile" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-mobile" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">iOS Engineering</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Android Frameworks</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">React Native</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-cyber', 'chev-cyber')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Cyber Security <i id="chev-cyber" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-cyber" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">Penetration Testing</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Data Encryption</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Network Audits</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <a href="#process" onclick="toggleMenu()">Process</a>
+        <a href="#faq" onclick="toggleMenu()">FAQ</a>
+        <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-4 text-center text-sm mt-4">Work With Me</a>
+    </nav>
+</div>
+
+<header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-600 flex items-center justify-center font-black text-white text-xl">D</div>
+            <a href="#" class="text-2xl font-black tracking-tighter text-white uppercase">DAIDANGW.COM</a>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-10">
+            <nav class="flex items-center space-x-8 text-[12px] uppercase font-bold tracking-[0.15em] text-white">
+                <a href="#" class="hover:text-blue-500 transition py-4">Home</a>
+                
+<div class="nav-group py-4">
+    <button class="uppercase hover:text-blue-500 transition flex items-center focus:outline-none">
+        Projects <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
+    </button>
+    
+    <div class="mega-menu p-12 text-gray-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-4 gap-10">
+            <div>
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400" class="w-full h-32 object-cover mb-4 grayscale hover:grayscale-0 transition duration-500" alt="Web">
+                <h4 class="font-black text-gray-900 mb-3 border-b-2 border-blue-600 pb-2 inline-block">Web Systems</h4>
+                <ul class="space-y-3 text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    <li><a href="#portfolio" class="hover:text-blue-600">Enterprise Portals</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">SaaS Dashboards</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">Cloud Integrations</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=400" class="w-full h-32 object-cover mb-4 grayscale hover:grayscale-0 transition duration-500" alt="Mobile">
+                <h4 class="font-black text-gray-900 mb-3 border-b-2 border-blue-600 pb-2 inline-block">Mobile Apps</h4>
+                <ul class="space-y-3 text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    <li><a href="#portfolio" class="hover:text-blue-600">iOS Engineering</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">Android Frameworks</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">React Native</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400" class="w-full h-32 object-cover mb-4 grayscale hover:grayscale-0 transition duration-500" alt="Systems">
+                <h4 class="font-black text-gray-900 mb-3 border-b-2 border-blue-600 pb-2 inline-block">Cyber Security</h4>
+                <ul class="space-y-3 text-[11px] text-gray-500 font-bold uppercase tracking-wider">
+                    <li><a href="#portfolio" class="hover:text-blue-600">Penetration Testing</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">Data Encryption</a></li>
+                    <li><a href="#portfolio" class="hover:text-blue-600">Network Audits</a></li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-950 p-8 text-white flex flex-col justify-center border-l-4 border-blue-600">
+                <h4 class="text-lg font-black mb-2 uppercase leading-none">Ready to<br>Build?</h4>
+                <p class="text-[10px] text-gray-400 mb-6 normal-case font-normal leading-relaxed">Let's architect your digital future.</p>
+                <a href="mailto:hello@daidang.com" class="bg-blue-600 text-white text-[10px] py-3 px-4 text-center font-black uppercase tracking-widest hover:bg-white hover:text-blue-600 transition">Get Started</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <a href="#process" class="hover:text-blue-500 transition py-4">Process</a>
+                <a href="#pricing" class="hover:text-blue-500 transition py-4">Pricing</a>
+                <a href="#faq" class="hover:text-blue-500 transition py-4">FAQ</a>
+            </nav>
+            
+            <div class="flex items-center space-x-6 border-l border-white/20 pl-10 text-white">
+                <a href="https://www.linkedin.com/in/daidangw" target="_blank" class="hover:text-blue-500 transition"><i class="fab fa-linkedin-in text-lg"></i></a>
+                <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-3 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-blue-600 transition duration-300">
+                    Work With Me
+                </a>
+            </div>
+        </div>
+
+        <button class="lg:hidden text-white text-3xl" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    </div>
+</header>
+    
+   <section class="relative h-screen w-full flex items-center justify-start px-6 md:px-20 overflow-hidden">
+    <div class="video-docker absolute top-0 left-0 w-full h-full overflow-hidden">
+        <video class="min-w-full min-h-full absolute object-cover" 
+               src="/Banner1.mp4" 
+               autoplay muted loop playsinline></video>
+    </div>
+    
+    <div class="video-overlay absolute top-0 left-0 w-full h-full z-10 bg-black/40"></div>
+
+    <div class="z-20 max-w-4xl pt-10">
+        <p class="text-blue-500 font-black tracking-[0.4em] uppercase mb-4 text-sm">daidangw.com</p>
+        <h1 class="text-7xl md:text-[120px] font-black text-white leading-[0.9] uppercase mb-6 tracking-tighter">
+            DAI<br>DANG
+        </h1>
+        <a href="#portfolio" class="inline-block bg-transparent border-2 border-white text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-blue-600 hover:border-blue-600 transition duration-300">
+            View Portfolio
+        </a>
+    </div>
+    </section>
+
+  <section id="process" class="py-32 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20">
+                <div class="max-w-xl">
+                    <p class="text-blue-600 font-black tracking-widest uppercase mb-2">FOCUS</p>
+                    <h2 class="text-5xl font-black uppercase text-gray-900 leading-none">My Four Pillars</h2>
+                </div>
+                <p class="text-gray-500 max-w-sm mt-4 md:mt-0 italic font-medium">Education is important. Never stop learning in this evolving world.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="relative group">
+                    <span class="text-8xl font-black text-gray-100 group-hover:text-blue-50 transition duration-500 absolute -top-10 -left-4 z-0">01</span>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-black uppercase mb-4">Nursing</h3>
+                        <p class="text-gray-500 leading-relaxed text-sm">Providing high-quality clinical care and patient advocacy.</p>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <span class="text-8xl font-black text-gray-100 group-hover:text-blue-50 transition duration-500 absolute -top-10 -left-4 z-0">02</span>
+                    <div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Business</h3><p class="text-gray-500 leading-relaxed text-sm">Driving organizational growth and efficiency through strategic planning.</p></div>
+                </div>
+                <div class="relative group">
+                    <span class="text-8xl font-black text-gray-100 group-hover:text-blue-50 transition duration-500 absolute -top-10 -left-4 z-0">03</span>
+                    <div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Finance</h3><p class="text-gray-500 leading-relaxed text-sm">Managing capital by analyzing complex market data and economic trends.</p></div>
+                </div>
+                <div class="relative group">
+                    <span class="text-8xl font-black text-gray-100 group-hover:text-blue-50 transition duration-500 absolute -top-10 -left-4 z-0">04</span>
+                    <div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Technology</h3><p class="text-gray-500 leading-relaxed text-sm">Leveraging cutting-edge technology to build solutions for modern challenges.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>   
+
+    <section id="portfolio" class="py-32 px-6 bg-[#111827]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">PORTFOLIO</h2>
+                <div class="w-24 h-2 bg-blue-600 mx-auto mt-6"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10">
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-b border-white/10">
+                    <img src="https://images.unsplash.com/photo-1581594294883-5109c202942f?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white">
+                        <h3 class="text-2xl font-black uppercase mb-4">D8 Oncology</h3>
+                        <a href="/timer.html" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-b border-white/10">
+                    <img src="https://images.squarespace-cdn.com/content/v1/6892773634f0fe2a947a7f89/efc2d99e-1afc-43e8-9cb7-46d4681169b9/California+Nurses+Association_modified.png?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Nursing Union</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-b border-white/10">
+                    <img src="https://www.cloudways.com/blog/wp-content/uploads/How-to-Sell-Website-Maintenance-Services.jpg?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Developing...</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-white/10">
+                    <img src="https://www.cloudways.com/blog/wp-content/uploads/How-to-Sell-Website-Maintenance-Services.jpg?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Developing...</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-white/10">
+                    <img src="https://www.cloudways.com/blog/wp-content/uploads/How-to-Sell-Website-Maintenance-Services.jpg?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Developing...</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square">
+                    <img src="https://www.cloudways.com/blog/wp-content/uploads/How-to-Sell-Website-Maintenance-Services.jpg?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Developing...</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+              <section class="py-20 px-6 bg-blue-600 text-white overflow-hidden relative">
+    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-10 pointer-events-none">
+        <span class="text-[20vw] font-black uppercase leading-none">FLASH SALE</span>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="text-center md:text-left">
+            <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-4">
+                BIG DAY<br><span class="text-gray-900">FLASH DEALS</span>
+            </h2>
+            <p class="text-xl font-bold uppercase tracking-widest opacity-80">Limited time offer. Don't miss out.</p>
+        </div>
+
+        <div class="flex gap-4 md:gap-8 items-center">
+            <div class="flex flex-col items-center">
+                <div id="days" class="text-6xl md:text-8xl font-black bg-gray-900 px-6 py-4 min-w-[120px] text-center rounded-sm">00</div>
+                <span class="text-xs font-black uppercase mt-2 tracking-widest">Days</span>
+            </div>
+            <div class="text-4xl font-black mb-6">:</div>
+            <div class="flex flex-col items-center">
+                <div id="hours" class="text-6xl md:text-8xl font-black bg-gray-900 px-6 py-4 min-w-[120px] text-center rounded-sm">00</div>
+                <span class="text-xs font-black uppercase mt-2 tracking-widest">Hours</span>
+            </div>
+            <div class="text-4xl font-black mb-6">:</div>
+            <div class="flex flex-col items-center">
+                <div id="minutes" class="text-6xl md:text-8xl font-black bg-gray-900 px-6 py-4 min-w-[120px] text-center rounded-sm">00</div>
+                <span class="text-xs font-black uppercase mt-2 tracking-widest">Mins</span>
+            </div>
+            <div class="text-4xl font-black mb-6">:</div>
+            <div class="flex flex-col items-center">
+                <div id="seconds" class="text-6xl md:text-8xl font-black bg-blue-500 px-6 py-4 min-w-[120px] text-center rounded-sm border-2 border-white">00</div>
+                <span class="text-xs font-black uppercase mt-2 tracking-widest text-white">Secs</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section id="faq" class="py-32 px-6 bg-gray-50">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-4xl font-black uppercase tracking-tighter mb-16">FAQ<span class="text-blue-600">?</span></h2>
+                <div class="space-y-4">
+                    <div class="faq-item faq-card p-8 cursor-pointer" onclick="this.classList.toggle('active')">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-black uppercase text-sm tracking-widest">What can you find on this website?</h4>
+                            <i class="fas fa-plus faq-icon transition-transform duration-300"></i>
+                        </div>
+                        <div class="faq-answer text-gray-500 text-sm leading-relaxed">You can find various resources that fit your needs on here.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-[#05080f] text-white pt-32 pb-12 px-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-6xl font-black tracking-tighter uppercase mb-8">Let's build<br><span class="text-blue-600">something real.</span></h3>
+                    <div class="flex space-x-6 text-3xl">
+                        <a href="https://www.linkedin.com/in/daidangw" class="hover:text-blue-600 transition"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.facebook.com/caseydang0407" class="hover:text-blue-600 transition"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.youtube.com/@CaseyDang0407" class="hover:text-blue-600 transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-blue-600 font-black uppercase text-xs tracking-[0.3em] mb-8">Navigation</h4>
+                    <ul class="space-y-4 text-gray-500 uppercase text-[11px] font-bold tracking-widest">
+                        <li><a href="#" class="hover:text-white transition">Home</a></li>
+                        <li><a href="#portfolio" class="hover:text-white transition">Portfolio</a></li>
+                        <li><a href="#faq" class="hover:text-white transition">FAQs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-blue-600 font-black uppercase text-xs tracking-[0.3em] mb-8">Contact</h4>
+                    <p class="text-gray-500 text-[11px] font-bold uppercase mb-4 tracking-widest">Sacramento, California</p>
+                    <p class="text-white text-sm font-black">daidangw@gmai.com</p>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto pt-12 border-t border-white/10 flex justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest font-bold">
+                <p>© 2026 DAIDANGW.COM</p>
+                <p><a href="#">BACK TO TOP ↑</a></p>
+            </div>
+        </footer>
+
+    <script>
+    // Navbar Scrolled Effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
+        else navbar.classList.remove('nav-scrolled');
+    });
+
+   // Toggle Main Mobile Drawer
+    function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('menu-hidden');
+    document.body.style.overflow = menu.classList.contains('menu-hidden') ? 'auto' : 'hidden';
+    }
+
+    // Close menu if a link is clicked (for anchor tags)
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (link.getAttribute('href').startsWith('#')) {
+                toggleMenu();
+            }
+        });
+    });
+
+    // Reusable Submenu Toggle
+    function toggleMobileSubmenu(menuId, chevronId) {
+    const menu = document.getElementById(menuId);
+    const chevron = document.getElementById(chevronId);
+    
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+        // If it's the main chevron, rotate. If it's a sub-plus, change icon.
+        if (chevron.classList.contains('fa-chevron-down')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.classList.replace('fa-plus', 'fa-minus');
+        }
+    } else {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+        if (chevron.classList.contains('fa-chevron-down')) {
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            chevron.classList.replace('fa-minus', 'fa-plus');
+        }
+    }
+    }
+        
+    // This will close the mobile drawer when any link inside it is clicked
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        // Only close if it's an anchor link (starts with #)
+        if (link.getAttribute('href').startsWith('#')) {
+            toggleMenu();
+        }
+      });
+    });
+
+// --- Countdown Timer Logic ---
+function startCountdown() {
+    // Set your target date here (YYYY-MM-DD format)
+    const targetDate = new Date("December 31, 2026 23:59:59").getTime();
+
+    const timer = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        // Time calculations
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display results
+        document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+        document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+        document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+        document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+        // If the countdown is over
+        if (distance < 0) {
+            clearInterval(timer);
+            document.querySelector(".timer-container").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+}
+
+// Initialize countdown
+startCountdown();
+        
+    </script>
+</body>
+</html>
