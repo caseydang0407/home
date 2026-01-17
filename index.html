@@ -140,15 +140,48 @@
         <a href="#" onclick="toggleMenu()">Home</a>
         
         <div>
-            <button onclick="toggleMobileSubmenu()" class="flex items-center justify-between w-full uppercase">
-                Projects <i id="mobile-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
+            <button onclick="toggleMobileSubmenu('mobile-projects-menu', 'main-chevron')" class="flex items-center justify-between w-full uppercase">
+                Projects <i id="main-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
             </button>
-            <div id="mobile-projects-menu" class="hidden flex-col space-y-4 mt-6 pl-4 border-l-2 border-blue-600">
-                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Web Systems</a>
-                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Mobile Apps</a>
-                <a href="#portfolio" onclick="toggleMenu()" class="text-sm text-gray-400">Cyber Security</a>
+            
+            <div id="mobile-projects-menu" class="hidden flex-col space-y-6 mt-6 pl-4 border-l-2 border-blue-600">
+                
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-web', 'chev-web')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Web Systems <i id="chev-web" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-web" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">Enterprise Portals</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">SaaS Dashboards</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Cloud Integrations</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-mobile', 'chev-mobile')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Mobile Apps <i id="chev-mobile" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-mobile" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">iOS Engineering</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Android Frameworks</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">React Native</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMobileSubmenu('sub-cyber', 'chev-cyber')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                        Cyber Security <i id="chev-cyber" class="fas fa-plus text-xs"></i>
+                    </button>
+                    <div id="sub-cyber" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                        <a href="#portfolio" class="text-sm text-gray-400">Penetration Testing</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Data Encryption</a>
+                        <a href="#portfolio" class="text-sm text-gray-400">Network Audits</a>
+                    </div>
+                </div>
+
             </div>
         </div>
+
         <a href="#process" onclick="toggleMenu()">Process</a>
         <a href="#faq" onclick="toggleMenu()">FAQ</a>
         <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-4 text-center text-sm mt-4">Work With Me</a>
@@ -360,43 +393,18 @@
         </footer>
 
     <script>
-// Navbar Scrolled Effect
+    // Navbar Scrolled Effect
     window.addEventListener('scroll', function() {
         const navbar = document.getElementById('navbar');
         if (window.scrollY > 80) navbar.classList.add('nav-scrolled');
         else navbar.classList.remove('nav-scrolled');
     });
 
-    // Main Mobile Menu Toggle
+   // Toggle Main Mobile Drawer
     function toggleMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const body = document.body;
-        
-        menu.classList.toggle('menu-hidden');
-        
-        // Prevent background scrolling when menu is open
-        if (!menu.classList.contains('menu-hidden')) {
-            body.style.overflow = 'hidden';
-        } else {
-            body.style.overflow = 'auto';
-        }
-    }
-
-    // Mobile Submenu (Projects) Toggle
-    function toggleMobileSubmenu() {
-        const submenu = document.getElementById('mobile-projects-menu');
-        const chevron = document.getElementById('mobile-chevron');
-        
-        // Check if hidden using Tailwind's 'hidden' class
-        if (submenu.classList.contains('hidden')) {
-            submenu.classList.remove('hidden');
-            submenu.classList.add('flex');
-            chevron.style.transform = 'rotate(180deg)';
-        } else {
-            submenu.classList.add('hidden');
-            submenu.classList.remove('flex');
-            chevron.style.transform = 'rotate(0deg)';
-        }
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('menu-hidden');
+    document.body.style.overflow = menu.classList.contains('menu-hidden') ? 'auto' : 'hidden';
     }
 
     // Close menu if a link is clicked (for anchor tags)
@@ -407,7 +415,34 @@
             }
         });
     });
-   
+
+    // Reusable Submenu Toggle
+    function toggleMobileSubmenu(menuId, chevronId) {
+    const menu = document.getElementById(menuId);
+    const chevron = document.getElementById(chevronId);
+    
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+        menu.classList.remove('hidden');
+        menu.classList.add('flex');
+        // If it's the main chevron, rotate. If it's a sub-plus, change icon.
+        if (chevron.classList.contains('fa-chevron-down')) {
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            chevron.classList.replace('fa-plus', 'fa-minus');
+        }
+    } else {
+        menu.classList.add('hidden');
+        menu.classList.remove('flex');
+        if (chevron.classList.contains('fa-chevron-down')) {
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            chevron.classList.replace('fa-minus', 'fa-plus');
+        }
+    }
+    }
+        
     // This will close the mobile drawer when any link inside it is clicked
     document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
