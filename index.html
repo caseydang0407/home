@@ -407,6 +407,17 @@
             }
         });
     });
+   
+    // This will close the mobile drawer when any link inside it is clicked
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        // Only close if it's an anchor link (starts with #)
+        if (link.getAttribute('href').startsWith('#')) {
+            toggleMenu();
+        }
+    });
+});
+        
     </script>
 </body>
 </html>
