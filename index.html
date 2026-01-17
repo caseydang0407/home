@@ -16,31 +16,40 @@
         }
         .video-overlay { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)); }
         
+        /* Navbar Alignment & States */
         .nav-scrolled {
             background-color: #111827 !important;
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
             border-bottom: 4px solid #2563eb;
         }
 
-        /* Sub-menu logic */
-        .group:hover .dropdown-menu { display: block; }
+        /* Fixed Project Dropdown Logic */
+        .nav-item { display: flex; align-items: center; height: 100%; }
         
-        /* Client Logo Animation */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .dropdown-trigger { position: relative; }
+        .dropdown-trigger:hover .dropdown-menu { 
+            display: block; 
+            opacity: 1;
+            transform: translateY(0);
         }
-        .logo-track {
-            display: flex;
-            width: calc(250px * 10);
-            animation: scroll 20s linear infinite;
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 220px;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 4px solid #2563eb;
+            z-index: 100;
+            margin-top: 10px;
         }
 
-        /* Accordion Custom Styles */
-        .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .faq-item.active .faq-content { max-height: 200px; }
-        .faq-item.active i { transform: rotate(180deg); }
+        /* FAQ Transition */
+        .faq-content { max-height: 0; overflow: hidden; transition: all 0.3s ease-out; }
+        .faq-item.active .faq-content { max-height: 300px; padding-bottom: 1.5rem; }
+        .faq-item.active i { transform: rotate(180deg); color: #2563eb; }
 
         .view-btn {
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
@@ -62,21 +71,25 @@
             </div>
 
             <div class="hidden lg:flex items-center space-x-10">
-                <nav class="flex space-x-8 text-[13px] uppercase font-bold tracking-widest">
-                    <a href="#" class="text-white hover:text-blue-500 transition">Home</a>
-                    <div class="relative group h-full py-2">
-                        <a href="#portfolio" class="text-white hover:text-blue-500 transition flex items-center">
+                <nav class="flex items-center space-x-8 text-[13px] uppercase font-bold tracking-widest text-white h-full">
+                    <a href="#" class="hover:text-blue-500 transition h-full flex items-center">Home</a>
+                    
+                    <div class="dropdown-trigger h-full flex items-center cursor-pointer">
+                        <span class="hover:text-blue-500 transition flex items-center">
                             Projects <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
-                        </a>
-                        <div class="dropdown-menu hidden absolute left-0 mt-4 w-48 bg-white shadow-2xl border-t-4 border-blue-600 animate-fade-in">
-                            <a href="#portfolio" class="block px-6 py-4 text-gray-800 hover:bg-gray-100 border-b border-gray-100 transition">Web Design</a>
-                            <a href="#portfolio" class="block px-6 py-4 text-gray-800 hover:bg-gray-100 border-b border-gray-100 transition">Mobile Apps</a>
-                            <a href="#portfolio" class="block px-6 py-4 text-gray-800 hover:bg-gray-100 transition">Architecture</a>
+                        </span>
+                        <div class="dropdown-menu text-gray-800">
+                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 border-b border-gray-100 transition">Web Architecture</a>
+                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 border-b border-gray-100 transition">Mobile Systems</a>
+                            <a href="#portfolio" class="block px-6 py-4 hover:bg-gray-100 transition">UI Frameworks</a>
                         </div>
                     </div>
-                    <a href="#pricing" class="text-white hover:text-blue-500 transition">Pricing</a>
-                    <a href="#faq" class="text-white hover:text-blue-500 transition">FAQ</a>
+
+                    <a href="#process" class="hover:text-blue-500 transition h-full flex items-center">Process</a>
+                    <a href="#pricing" class="hover:text-blue-500 transition h-full flex items-center">Pricing</a>
+                    <a href="#faq" class="hover:text-blue-500 transition h-full flex items-center">FAQ</a>
                 </nav>
+                
                 <div class="flex items-center space-x-6 border-l border-white/20 pl-10 text-white">
                     <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin-in text-lg"></i></a>
                     <a href="mailto:hello@daidang.com" class="bg-blue-600 px-8 py-3 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-blue-600 transition duration-300">
@@ -93,6 +106,7 @@
         <nav class="flex flex-col space-y-6 mt-10 text-3xl font-black uppercase">
             <a href="#" onclick="toggleMenu()">Home</a>
             <a href="#portfolio" onclick="toggleMenu()">Projects</a>
+            <a href="#process" onclick="toggleMenu()">Process</a>
             <a href="#pricing" onclick="toggleMenu()">Pricing</a>
             <a href="#faq" onclick="toggleMenu()">FAQ</a>
         </nav>
@@ -111,74 +125,79 @@
         </div>
     </section>
 
-    <div class="py-10 bg-white border-b border-gray-200 overflow-hidden">
-        <div class="logo-track">
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-google"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-amazon"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-apple"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-microsoft"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-spotify"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-google"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-amazon"></i></div>
-            <div class="w-[250px] flex justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition duration-300 px-10 text-5xl"><i class="fab fa-apple"></i></div>
+    <section id="process" class="py-32 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-20">
+                <p class="text-blue-600 font-black tracking-widest uppercase mb-2">Strategy</p>
+                <h2 class="text-5xl font-black uppercase text-gray-900">Working Process</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">01</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Discovery</h3><p class="text-gray-500 leading-relaxed">Analyzing requirements and industrial benchmarks.</p></div></div>
+                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">02</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Architecture</h3><p class="text-gray-500 leading-relaxed">Designing framework and security protocols.</p></div></div>
+                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">03</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Development</h3><p class="text-gray-500 leading-relaxed">Surgical code execution and modular design.</p></div></div>
+                <div class="relative"><span class="text-8xl font-black text-gray-100 absolute -top-10 -left-4 z-0">04</span><div class="relative z-10"><h3 class="text-xl font-black uppercase mb-4">Launch</h3><p class="text-gray-500 leading-relaxed">Precision deployment and performance auditing.</p></div></div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <section id="portfolio" class="py-32 px-6 bg-[#111827]">
         <div class="max-w-7xl mx-auto">
-            <div class="mb-20 text-center">
-                <h2 class="text-5xl md:text-7xl font-black text-white uppercase mb-4">Case Studies</h2>
-                <div class="w-24 h-2 bg-blue-600 mx-auto"></div>
+            <div class="text-center mb-20 uppercase">
+                <h2 class="text-5xl md:text-7xl font-black text-white">Latest Work</h2>
+                <div class="w-24 h-2 bg-blue-600 mx-auto mt-4"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10">
                 <div class="relative group overflow-hidden bg-black aspect-square border-r border-b border-white/10">
-                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
                     <div class="absolute inset-0 p-10 flex flex-col justify-end text-white">
-                        <h3 class="text-2xl font-black uppercase mb-4">Project Alpha</h3>
-                        <a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Project</a>
+                        <h3 class="text-2xl font-black uppercase mb-4">Automation Hub</h3>
+                        <a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a>
                     </div>
                 </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-b border-white/10">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Security Protocol</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a></div>
                 </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-b border-white/10">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Cloud Architecture</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-white/10">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Data Analytics</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square border-r border-white/10">
+                    <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Smart Factory</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a></div>
+                </div>
+                <div class="relative group overflow-hidden bg-black aspect-square">
+                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800" class="w-full h-full object-cover opacity-60 group-hover:opacity-30 transition duration-700">
+                    <div class="absolute inset-0 p-10 flex flex-col justify-end text-white"><h3 class="text-2xl font-black uppercase mb-4">Core Backend</h3><a href="#" class="view-btn inline-block bg-blue-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-center">Open Case Study</a></div>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="pricing" class="py-32 px-6 bg-white">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 uppercase">
-                <p class="text-blue-600 font-black tracking-widest mb-2">Investment Plans</p>
-                <h2 class="text-5xl font-black text-gray-900">Choose Your Strategy</h2>
+                <h2 class="text-5xl font-black text-gray-900">Investment</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="border-4 border-gray-100 p-10 flex flex-col">
-                    <h3 class="text-xl font-black uppercase mb-4">Standard</h3>
-                    <div class="text-4xl font-black mb-6">$1,999</div>
-                    <ul class="space-y-4 mb-10 flex-grow text-gray-600 font-bold uppercase text-xs tracking-widest">
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> Custom UI Design</li>
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> Frontend Dev</li>
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> 5 Pages</li>
-                    </ul>
-                    <a href="mailto:hello@daidang.com" class="text-center py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Get Started</a>
+                <div class="border-4 border-gray-100 p-10 flex flex-col text-center">
+                    <h3 class="text-xl font-black uppercase mb-4">Starter</h3>
+                    <div class="text-4xl font-black mb-6">$2,500</div>
+                    <a href="mailto:hello@daidang.com" class="py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Get Quote</a>
                 </div>
-                <div class="border-4 border-blue-600 p-10 bg-gray-900 text-white flex flex-col transform scale-105 shadow-2xl relative">
-                    <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 text-[10px] font-black uppercase italic tracking-widest">Popular</div>
+                <div class="border-4 border-blue-600 p-10 bg-gray-900 text-white flex flex-col text-center scale-105 shadow-2xl">
                     <h3 class="text-xl font-black uppercase mb-4">Enterprise</h3>
-                    <div class="text-4xl font-black mb-6">$4,499</div>
-                    <ul class="space-y-4 mb-10 flex-grow uppercase text-xs tracking-widest">
-                        <li><i class="fas fa-check text-blue-400 mr-2"></i> Full Stack Architecture</li>
-                        <li><i class="fas fa-check text-blue-400 mr-2"></i> CMS Integration</li>
-                        <li><i class="fas fa-check text-blue-400 mr-2"></i> API Development</li>
-                    </ul>
-                    <a href="mailto:hello@daidang.com" class="text-center py-4 bg-blue-600 text-white font-black uppercase text-xs tracking-widest hover:bg-white hover:text-blue-600 transition">Get Started</a>
+                    <div class="text-4xl font-black mb-6">$5,000</div>
+                    <a href="mailto:hello@daidang.com" class="py-4 bg-blue-600 text-white font-black uppercase text-xs tracking-widest hover:bg-white hover:text-blue-600 transition">Get Quote</a>
                 </div>
-                <div class="border-4 border-gray-100 p-10 flex flex-col">
-                    <h3 class="text-xl font-black uppercase mb-4">Industrial</h3>
-                    <div class="text-4xl font-black mb-6">Custom</div>
-                    <ul class="space-y-4 mb-10 flex-grow text-gray-600 font-bold uppercase text-xs tracking-widest">
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> Scalable Infrastructure</li>
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> Security Audits</li>
-                        <li><i class="fas fa-check text-blue-600 mr-2"></i> Long-term Support</li>
-                    </ul>
-                    <a href="mailto:hello@daidang.com" class="text-center py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Contact Us</a>
+                <div class="border-4 border-gray-100 p-10 flex flex-col text-center">
+                    <h3 class="text-xl font-black uppercase mb-4">Custom</h3>
+                    <div class="text-4xl font-black mb-6">Contact</div>
+                    <a href="mailto:hello@daidang.com" class="py-4 bg-gray-900 text-white font-black uppercase text-xs tracking-widest hover:bg-blue-600 transition">Get Quote</a>
                 </div>
             </div>
         </div>
@@ -186,24 +205,24 @@
 
     <section id="faq" class="py-32 px-6 bg-gray-100">
         <div class="max-w-4xl mx-auto">
-            <h2 class="text-4xl font-black uppercase text-center mb-16 tracking-tighter">Support & Intelligence</h2>
+            <h2 class="text-4xl font-black uppercase text-center mb-16 tracking-tighter">Frequently Asked Questions</h2>
             <div class="space-y-4">
-                <div class="faq-item bg-white border-l-4 border-blue-600" onclick="this.classList.toggle('active')">
-                    <div class="p-6 flex justify-between items-center cursor-pointer">
-                        <span class="font-black uppercase tracking-tight">How long does a project take?</span>
+                <div class="faq-item bg-white border-l-4 border-blue-600 cursor-pointer transition-all" onclick="this.classList.toggle('active')">
+                    <div class="p-6 flex justify-between items-center">
+                        <span class="font-black uppercase tracking-tight text-sm md:text-base">What is the typical turnaround for a project?</span>
                         <i class="fas fa-chevron-down transition-transform"></i>
                     </div>
-                    <div class="faq-content px-6 pb-6 text-gray-600">
-                        Typical industrial-grade web applications take between 4-8 weeks from architecture to final deployment.
+                    <div class="faq-content px-6 text-gray-600 text-sm leading-relaxed">
+                        Most projects are completed within 4 to 8 weeks, depending on the complexity and technical requirements of the build.
                     </div>
                 </div>
-                <div class="faq-item bg-white border-l-4 border-blue-600" onclick="this.classList.toggle('active')">
-                    <div class="p-6 flex justify-between items-center cursor-pointer">
-                        <span class="font-black uppercase tracking-tight">What technologies do you use?</span>
+                <div class="faq-item bg-white border-l-4 border-blue-600 cursor-pointer transition-all" onclick="this.classList.toggle('active')">
+                    <div class="p-6 flex justify-between items-center">
+                        <span class="font-black uppercase tracking-tight text-sm md:text-base">Do you provide long-term maintenance?</span>
                         <i class="fas fa-chevron-down transition-transform"></i>
                     </div>
-                    <div class="faq-content px-6 pb-6 text-gray-600">
-                        We specialize in React, Node.js, and high-performance Tailwind CSS systems.
+                    <div class="faq-content px-6 text-gray-600 text-sm leading-relaxed">
+                        Yes, we offer ongoing maintenance packages to ensure your systems remain secure and updated with the latest technologies.
                     </div>
                 </div>
             </div>
@@ -211,25 +230,17 @@
     </section>
 
     <footer class="bg-gray-900 text-white py-20 px-6 border-t-8 border-blue-600">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <div class="mb-12 md:mb-0">
-                <h3 class="text-4xl font-black tracking-tighter uppercase mb-2">DAI DANG</h3>
-                <p class="text-gray-500 text-sm tracking-widest uppercase">Designing industrial digital experiences.</p>
+                <h3 class="text-4xl font-black uppercase mb-2">DAI DANG</h3>
+                <p class="text-gray-500 uppercase text-xs tracking-[0.3em]">Modern Industrial Architecture.</p>
             </div>
-            <div class="flex space-x-12">
-                <div>
-                    <h4 class="font-black uppercase text-blue-500 mb-6 text-xs tracking-widest">Connect</h4>
-                    <div class="flex space-x-6 text-2xl">
-                        <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-github"></i></a>
-                        <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
+            <div class="flex space-x-10 text-2xl">
+                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-github"></i></a>
+                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 text-xs text-gray-500 uppercase tracking-[0.4em]">
-            © 2026 Dai Dang / All rights reserved.
         </div>
     </footer>
 
