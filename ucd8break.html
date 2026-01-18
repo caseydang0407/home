@@ -14,7 +14,7 @@
     /* Print Styles */
     @media print {
         @page {
-            margin: 0.4in; /* Standard margin */
+            margin: 0.3in; /* Slightly smaller margin to give more room */
             size: letter portrait;
         }
         body { background-color: white; padding: 0; margin: 0; }
@@ -27,56 +27,62 @@
             margin: 0 !important; 
             padding: 0 !important; 
             box-shadow: none !important;
-            display: flex !important;
-            flex-direction: column !important;
-            height: 98vh; /* Forces container to take full page height */
         }
 
-        /* Force vertical stacking and maximize space */
+        /* Prevent the browser from repeating table headers on the next page */
+        thead { display: table-header-group; }
+        tfoot { display: table-footer-group; }
+        tr { page-break-inside: avoid; }
+
+        /* Force vertical stacking */
         #result-view .grid { 
             display: flex !important; 
             flex-direction: column !important;
-            flex-grow: 1 !important; /* Tells the grid to expand */
-            gap: 15px !important; 
+            gap: 10px !important; 
         }
 
         #result-view .grid > div {
-            display: flex !important;
-            flex-direction: column !important;
-            flex: 1 1 auto !important; /* Each table section takes equal half of the page */
+            width: 100% !important;
         }
 
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            flex-grow: 1; /* Makes table stretch vertically */
-            font-size: 11pt !important; /* Larger text for readability */
+            font-size: 10.5pt !important;
+            table-layout: fixed; /* Ensures consistent column widths */
+        }
+
+        /* Adjust row height to prevent the "jump" to page 2 */
+        td { 
+            border: 1px solid #000; 
+            height: 0.9cm !important; /* Slightly shorter to guarantee 1-page fit */
+            padding-left: 6px !important;
+            vertical-align: middle;
+            word-wrap: break-word;
         }
 
         th { 
-            background-color: #f3f4f6 !important; 
-            padding: 8px !important; 
+            border: 1px solid #000;
+            padding: 4px !important;
+            background-color: #f3f4f6 !important;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* The "Secret Sauce" to flood the page: */
-        td { 
-            border: 1px solid #000; 
-            padding: 0 !important; /* Reset padding to let height control it */
-            height: 1.1cm !important; /* Large fixed height to force table to bottom */
-            padding-left: 8px !important;
-            vertical-align: middle;
-        }
-
-        h1 { font-size: 20pt !important; margin-bottom: 2px !important; }
-        h2 { font-size: 12pt !important; margin-bottom: 8px !important; }
+        h1 { font-size: 18pt !important; margin-bottom: 2px !important; text-align: center; }
+        h2 { font-size: 11pt !important; margin-bottom: 5px !important; text-align: center; }
 
         .bg-blue-100 { background-color: #dbeafe !important; -webkit-print-color-adjust: exact; }
         .bg-green-100 { background-color: #dcfce7 !important; -webkit-print-color-adjust: exact; }
-        
-        /* Ensure rows marked with conflict still stand out */
         .bg-red-50 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; }
-    }
-</style>
+        
+        /* Ensure the conflict box doesn't push things over */
+        #conflict-warning-box {
+            margin-top: 5px !important;
+            padding: 4px !important;
+            font-size: 9pt !important;
+            }
+        }
+    </style>
     
 </head>
 <body class="text-gray-800">
