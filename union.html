@@ -572,7 +572,32 @@ function startCountdown() {
 
 // Initialize countdown
 startCountdown();
-        
+
+function openVideo(videoId) {
+    console.log("Opening video:", videoId); // This helps you check the console (F12) to see if it's working
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('youtubePlayer');
+    
+    if (modal && player) {
+        player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+        modal.style.display = 'flex'; // Forces it to show
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeVideo() {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('youtubePlayer');
+    
+    if (modal && player) {
+        modal.style.display = 'none'; // Forces it to hide
+        modal.classList.add('hidden');
+        player.src = ""; 
+        document.body.style.overflow = 'auto';
+    }
+}
+
     </script>
 </body>
 </html>
