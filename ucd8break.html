@@ -11,20 +11,35 @@
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         
         /* Print Styles */
-        @media print {
-            body { background-color: white; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .print-container { width: 100%; max-width: 100%; margin: 0; padding: 0; }
-            table { width: 100%; border-collapse: collapse; font-size: 11px; }
-            th, td { border: 1px solid #000; padding: 4px; text-align: left; }
-            h1 { font-size: 16px; margin-bottom: 5px; }
-            h2 { font-size: 12px; margin-bottom: 10px; }
-            .footer-note { font-size: 9px; margin-top: 5px; font-style: italic; }
-            .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; }
-            .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; }
-        }
+    @media print {
+    body { background-color: white; }
+    .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    .print-container { width: 100%; max-width: 100%; margin: 0; padding: 0; box-shadow: none; }
+    
+    /* This forces the two tables to stack vertically when printing */
+    #result-view .grid { 
+        display: block !important; 
+    }
+    
+    /* Adds spacing between the two tables for clarity */
+    #result-view .grid > div {
+        margin-bottom: 20px;
+        page-break-inside: avoid; /* Prevents a table from splitting across pages */
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+    h1 { font-size: 18px; margin-bottom: 5px; }
+    h2 { font-size: 14px; margin-bottom: 10px; }
+    .footer-note { font-size: 9px; margin-top: 5px; font-style: italic; }
+    .bg-red-100 { background-color: #fee2e2 !important; -webkit-print-color-adjust: exact; }
+    .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; }
+    .bg-blue-100 { background-color: #dbeafe !important; -webkit-print-color-adjust: exact; }
+    .bg-green-100 { background-color: #dcfce7 !important; -webkit-print-color-adjust: exact; }
+}
     </style>
+    
 </head>
 <body class="text-gray-800">
 
@@ -125,7 +140,7 @@
                 <h2 class="text-gray-600 uppercase"><span id="displayCount"></span> STAFF NURSES AND 2 BREAK CHAMPIONS</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                     <div class="bg-blue-100 p-2 font-bold border border-blue-300 text-center uppercase">
                         Break Champion 1: <span id="resChamp1" class="text-blue-800"></span>
