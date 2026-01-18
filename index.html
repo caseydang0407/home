@@ -49,6 +49,29 @@
     background-color: white !important;
     color: #2563eb !important;
 }
+
+        .btn-slide {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.btn-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: white; /* The fill color */
+    transition: left 0.4s cubic-bezier(0.7, 0, 0.2, 1);
+    z-index: -1;
+}
+.btn-slide:hover::before {
+    left: 0;
+}
+.btn-slide:hover {
+    color: #2563eb !important; /* Blue text on white hover */
+}
         
         /* Ensure the parent can contain the absolute child */
         .nav-group {
@@ -344,12 +367,12 @@
         
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800" alt="Project 1" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Enterprise Portal</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">Custom architecture for high-scale corporate data management.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
@@ -357,11 +380,11 @@
 
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800" alt="Project 2" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">SaaS Dashboard</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">Real-time analytics visualization for fintech startups.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
@@ -369,11 +392,11 @@
 
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800" alt="Project 3" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Security Audit</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">Penetration testing and encryption protocols for healthcare.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
@@ -381,11 +404,11 @@
 
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=800" alt="Project 4" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Mobile App</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">Cross-platform React Native solutions for logistics.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
@@ -393,11 +416,11 @@
 
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800" alt="Project 5" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Cloud Infra</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">AWS serverless deployment for high-traffic media sites.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
@@ -405,11 +428,11 @@
 
         <div class="relative h-[400px] overflow-hidden group zoom-out-container">
             <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800" alt="Project 6" class="absolute inset-0 w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 bg-black/70 group-hover:bg-black/40 transition-colors duration-500"></div>
             <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
                 <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">AI Integration</h3>
                 <p class="text-sm text-gray-300 mb-6 max-w-xs">Custom LLM training and integration for customer support.</p>
-                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                <a href="#" class="btn-slide border-2 border-white px-8 py-3 text-[11px] font-black uppercase tracking-widest text-white inline-block">
                     View Project
                 </a>
             </div>
