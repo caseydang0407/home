@@ -598,6 +598,12 @@ function closeVideo() {
     }
 }
 
-    </script>
+</script>
+    <div id="videoModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/95 p-4" style="display: none;">
+    <button onclick="closeVideo()" class="absolute top-8 right-8 text-white text-4xl z-[10000]">&times;</button>
+    <div class="w-full max-w-4xl aspect-video bg-black shadow-2xl">
+        <iframe id="youtubePlayer" class="w-full h-full" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    </div>
 </body>
 </html>
