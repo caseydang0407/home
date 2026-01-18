@@ -346,12 +346,12 @@
                         Access The Program
                     </a>
                     
-                   <div onclick="openVideo('t6FY9RfqeSQ&t=312s')" class="flex items-center space-x-4 cursor-pointer group">
+<div onclick="openVideo('dQw4w9WgXcQ')" class="flex items-center space-x-4 cursor-pointer group relative z-30">
     <div class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-blue-500 transition-colors">
         <i class="fas fa-play text-blue-500 text-xs"></i>
     </div>
     <span class="text-xs font-black uppercase tracking-widest group-hover:text-blue-500 transition-colors">Watch Tutorial</span>
-    </div>
+</div>
                 </div>
             </div>
         </div>
@@ -540,43 +540,37 @@ function startCountdown() {
 startCountdown();
 
 function openVideo(videoId) {
+    console.log("Opening video:", videoId); // This helps you check the console (F12) to see if it's working
     const modal = document.getElementById('videoModal');
     const player = document.getElementById('youtubePlayer');
     
-    // 1. Set the video source with autoplay
-    player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
-    
-    // 2. Show the modal
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    
-    // 3. Prevent the background from scrolling
-    document.body.style.overflow = 'hidden';
+    if (modal && player) {
+        player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+        modal.style.display = 'flex'; // Forces it to show
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeVideo() {
     const modal = document.getElementById('videoModal');
     const player = document.getElementById('youtubePlayer');
     
-    // 1. Hide the modal
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    
-    // 2. Clear the video source (stops the sound)
-    player.src = "";
-    
-    // 3. Restore scrolling
-    document.body.style.overflow = 'auto';
-}
-
-// Close if user clicks the dark area outside the video
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('videoModal');
-    if (event.target == modal) {
-        closeVideo();
+    if (modal && player) {
+        modal.style.display = 'none'; // Forces it to hide
+        modal.classList.add('hidden');
+        player.src = ""; 
+        document.body.style.overflow = 'auto';
     }
-});
+}
         
     </script>
+
+    <div id="videoModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/95 p-4" style="display: none;">
+    <button onclick="closeVideo()" class="absolute top-8 right-8 text-white text-4xl z-[10000]">&times;</button>
+    <div class="w-full max-w-4xl aspect-video bg-black shadow-2xl">
+        <iframe id="youtubePlayer" class="w-full h-full" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    </div>
 </body>
 </html>
