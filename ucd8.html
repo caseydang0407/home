@@ -173,7 +173,41 @@
     width: 100%;
     height: 100%;
 }
-        
+
+/* Button hover effect */
+.btn-skew {
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    transition: all 0.3s ease;
+}
+.btn-skew:hover {
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+    background-color: white !important;
+    color: #2563eb !important;
+}
+
+        .btn-slide {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.btn-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: white; /* The fill color */
+    transition: left 0.4s cubic-bezier(0.7, 0, 0.2, 1);
+    z-index: -1;
+}
+.btn-slide:hover::before {
+    left: 0;
+}
+.btn-slide:hover {
+    color: #2563eb !important; /* Blue text on white hover */
+}
+            
     </style>
 </head>
 <body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
@@ -342,7 +376,7 @@
                 </p>
                 
                 <div class="flex flex-wrap gap-6">
-                    <a href="/ucd8break" class="btn-slide border-2 border-white px-10 py-5 text-sm font-black uppercase tracking-widest text-white inline-block">
+                    <a href="/ucd8break" class="btn-skew border-2 border-white px-10 py-5 text-sm font-black uppercase tracking-widest text-white inline-block">
                         Access The Program
                     </a>
                     
