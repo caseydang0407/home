@@ -391,15 +391,15 @@
     
     <section id="countdown" class="py-20 px-6 bg-blue-600 text-white overflow-hidden relative">
     <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-10 pointer-events-none">
-        <span class="text-[30vw] md:text-[20vw] font-black uppercase leading-none">FIGHT</span>
+        <span class="text-[30vw] md:text-[20vw] font-black uppercase leading-none">KA-CHING</span>
     </div>
 
     <div class="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
         <div class="text-center lg:text-left">
             <h2 class="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none mb-4">
-                CALIFORNIA<br><span class="text-gray-900">NURSING UNION</span>
+                NEXT<br><span class="text-gray-900">PAYCHECK</span>
             </h2>
-            <p class="text-sm md:text-xl font-bold uppercase tracking-widest opacity-80">COUNTING DOWN TO THE NEXT CONTRACT IN 2029</p>
+            <p class="text-sm md:text-xl font-bold uppercase tracking-widest opacity-80">WILL HIT YOUR ACCOUNT IN</p>
         </div>
 
         <div class="grid grid-cols-2 md:flex gap-4 md:gap-8 items-center justify-center">
@@ -538,13 +538,25 @@
       });
     });
 
-// --- Countdown Timer Logic ---
 function startCountdown() {
-    // Set your target date here (YYYY-MM-DD format)
-    const targetDate = new Date("December 31, 2029 23:59:59").getTime();
+    // 1. Set the initial reference start date (Midnight, Jan 14, 2026)
+    const startDate = new Date("2026-01-14T00:00:00").getTime();
+    const fourteenDaysInMs = 14 * 24 * 60 * 60 * 1000;
 
     const timer = setInterval(function() {
         const now = new Date().getTime();
+        
+        // 2. Calculate how many 14-day cycles have passed since the start
+        const timePassed = now - startDate;
+        const cyclesPassed = Math.floor(timePassed / fourteenDaysInMs);
+        
+        // 3. Set the target to exactly one cycle after the cycles already passed
+        // This ensures it always points to the NEXT bi-weekly Wednesday
+        let targetDate = startDate + (cyclesPassed + 1) * fourteenDaysInMs;
+
+        // If 'now' is before the very first start date, target is the start date itself
+        if (timePassed < 0) targetDate = startDate;
+
         const distance = targetDate - now;
 
         // Time calculations
@@ -559,10 +571,11 @@ function startCountdown() {
         document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
         document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
 
-        // If the countdown is over
+        // Logic for the moment of reset
         if (distance < 0) {
-            clearInterval(timer);
-            document.querySelector(".timer-container").innerHTML = "EXPIRED";
+            // No need to clear interval; it will naturally pick up 
+            // the next cycle on the next tick because of the math above.
+            console.log("Timer Resetting...");
         }
     }, 1000);
 }
