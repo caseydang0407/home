@@ -30,6 +30,26 @@
             border-bottom: 4px solid #2563eb;
         }
 
+/* Zoom-out effect: Image starts at 1.1 scale and goes to 1 on hover */
+.zoom-out-container img {
+    transform: scale(1.15);
+    transition: transform 0.7s ease;
+}
+.zoom-out-container:hover img {
+    transform: scale(1);
+}
+
+/* Button hover effect */
+.btn-skew {
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    transition: all 0.3s ease;
+}
+.btn-skew:hover {
+    clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+    background-color: white !important;
+    color: #2563eb !important;
+}
+        
         /* Ensure the parent can contain the absolute child */
         .nav-group {
             position: static; /* This allows the mega menu to align to the header, not the link */
@@ -319,6 +339,85 @@
         </div>
     </section>   
 
+<section id="projects" class="bg-black">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800" alt="Project 1" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Enterprise Portal</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">Custom architecture for high-scale corporate data management.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800" alt="Project 2" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">SaaS Dashboard</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">Real-time analytics visualization for fintech startups.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800" alt="Project 3" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Security Audit</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">Penetration testing and encryption protocols for healthcare.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=800" alt="Project 4" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Mobile App</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">Cross-platform React Native solutions for logistics.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800" alt="Project 5" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">Cloud Infra</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">AWS serverless deployment for high-traffic media sites.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+        <div class="relative h-[400px] overflow-hidden group zoom-out-container">
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800" alt="Project 6" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500"></div>
+            <div class="absolute inset-0 p-10 flex flex-col justify-end text-white z-10">
+                <h3 class="text-3xl font-black uppercase mb-2 tracking-tighter">AI Integration</h3>
+                <p class="text-sm text-gray-300 mb-6 max-w-xs">Custom LLM training and integration for customer support.</p>
+                <a href="#" class="btn-skew bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest py-3 px-8 w-fit">
+                    View Project
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+    
         <section id="faq" class="py-32 px-6 bg-gray-50">
             <div class="max-w-3xl mx-auto">
                 <h2 class="text-4xl font-black uppercase tracking-tighter mb-16">FAQ<span class="text-blue-600">?</span></h2>
