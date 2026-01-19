@@ -7,150 +7,149 @@
     <title>Dai Dang</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        html { scroll-behavior: smooth; }
-        
-    /* This forces the video to fill the container without stretching distortion */
+
+<style>
+    html { scroll-behavior: smooth; }
+    
+     /* This forces the video to fill the container without stretching distortion */
     .video-docker video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%);
-    object-fit: cover; /* This is the "magic" property */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        object-fit: cover; /* This is the "magic" property */
     }
 
-        /* Scrolled Navbar State */
-        .nav-scrolled {
-            background-color: #111827 !important;
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
-            border-bottom: 4px solid #2563eb;
-        }
+    /* Scrolled Navbar State */
+    .nav-scrolled {
+        background-color: #111827 !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 4px solid #2563eb;
+    }
 
-/* Zoom-out effect: Image starts at 1.1 scale and goes to 1 on hover */
-.zoom-out-container img {
-    transform: scale(1.15);
-    transition: transform 0.7s ease;
-}
-.zoom-out-container:hover img {
-    transform: scale(1);
-}
-
-/* Button hover effect */
-.btn-skew {
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-    transition: all 0.3s ease;
-}
-.btn-skew:hover {
-    clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
-    background-color: white !important;
-    color: #2563eb !important;
-}
-
-        .btn-slide {
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-.btn-slide::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: white; /* The fill color */
-    transition: left 0.4s cubic-bezier(0.7, 0, 0.2, 1);
-    z-index: -1;
-}
-.btn-slide:hover::before {
-    left: 0;
-}
-.btn-slide:hover {
-    color: #2563eb !important; /* Blue text on white hover */
-}
+    /* Zoom-out effect: Image starts at 1.1 scale and goes to 1 on hover */
+    .zoom-out-container img {
+        transform: scale(1.15);
+        transition: transform 0.7s ease;
+    }
         
-        /* Ensure the parent can contain the absolute child */
-        .nav-group {
-            position: static; /* This allows the mega menu to align to the header, not the link */
-        }
+    .zoom-out-container:hover img {
+         transform: scale(1);
+    }
 
-        .mega-menu {
-            display: none;
-            position: absolute;
-            top: 100%; /* Sits exactly at the bottom of the header */
-            left: 0;
-            width: 100vw;
-            background: white;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-top: 4px solid #2563eb;
-            z-index: 1000;
-        }
-
-        /* Hover logic */
-        .nav-group:hover .mega-menu {
-            display: block;
-            animation: navFade 0.3s ease-out;
-        }
-
-        /* Group hover ensures the menu stays open while moving mouse down */
-        .nav-group:hover .mega-menu {
-            display: block;
-            animation: navFade 0.3s ease-out;
-        }
-
-        @keyframes navFade {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* FAQ Transition */
-        .faq-card { background: white; border: 1px solid #e5e7eb; transition: all 0.4s ease; }
-        .faq-item.active .faq-answer { max-height: 200px; opacity: 1; padding-top: 1rem; }
-        .faq-item.active .faq-icon { transform: rotate(45deg); color: #2563eb; }
-        .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s; opacity: 0; }
-
-        .view-btn {
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            transition: all 0.3s ease;
-        }
-        .view-btn:hover { clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%); }
-
-        #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .menu-hidden { transform: translateX(100%); }
+    /* Button hover effect */
+    .btn-slide {
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
         
-        /* Ensure the mega menu takes up the full width of the viewport */
-        .mega-menu {
-            left: 0;
-            right: 0;
-            width: 100vw;
-            margin-left: calc(-50vw + 50%); /* Centers it back if the parent container is limited */
-        }
+    .btn-slide::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: white; /* The fill color */
+        transition: left 0.4s cubic-bezier(0.7, 0, 0.2, 1);
+        z-index: -1;
+    }
 
-        /* Add a helper to prevent body scroll when mobile menu is open */
-        .no-scroll {
-            overflow: hidden;
-        }
+    .btn-slide:hover::before {
+        left: 0;
+    }
 
-        /* Ensure the mobile menu slides from the right */
-        #mobile-menu {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    .btn-slide:hover {
+        color: #2563eb !important; /* Blue text on white hover */
+    }
+        
+    /* Ensure the parent can contain the absolute child */
+    .nav-group {
+        position: static; /* This allows the mega menu to align to the header, not the link */
+    }
 
-        .menu-hidden {
-            transform: translateX(100%);
-        }
+    .mega-menu {
+        display: none;
+        position: absolute;
+        top: 100%; /* Sits exactly at the bottom of the header */
+        left: 0;
+        width: 100vw;
+        background: white;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border-top: 4px solid #2563eb;
+        z-index: 1000;
+    }
 
-        /* Optional: Smooth transition for the accordion */
-        #mobile-projects-menu {
-            transition: all 0.3s ease-in-out;
-        }
-    </style>
+    /* Hover logic */
+    .nav-group:hover .mega-menu {
+        display: block;
+        animation: navFade 0.3s ease-out;
+    }
+
+    /* Group hover ensures the menu stays open while moving mouse down */
+    .nav-group:hover .mega-menu {
+        display: block;
+        animation: navFade 0.3s ease-out;
+    }
+
+    @keyframes navFade {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* FAQ Transition */
+    .faq-card { background: white; border: 1px solid #e5e7eb; transition: all 0.4s ease; }
+    .faq-item.active .faq-answer { max-height: 200px; opacity: 1; padding-top: 1rem; }
+    .faq-item.active .faq-icon { transform: rotate(45deg); color: #2563eb; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: all 0.4s; opacity: 0; }
+
+    .view-btn {
+        clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        transition: all 0.3s ease;
+    }
+        
+    .view-btn:hover { clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%); }
+
+    #mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .menu-hidden { transform: translateX(100%); }
+        
+    /* Ensure the mega menu takes up the full width of the viewport */
+    .mega-menu {
+        left: 0;
+        right: 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%); /* Centers it back if the parent container is limited */
+    }
+
+    /* Add a helper to prevent body scroll when mobile menu is open */
+    .no-scroll {
+        overflow: hidden;
+    }
+
+    /* Ensure the mobile menu slides from the right */
+    #mobile-menu {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .menu-hidden {
+        transform: translateX(100%);
+    }
+
+    /* Optional: Smooth transition for the accordion */
+    #mobile-projects-menu {
+        transition: all 0.3s ease-in-out;
+    }
+        
+</style>
+    
 </head>
+    
 <body class="bg-[#f4f4f4] font-sans text-gray-900 overflow-x-hidden">
 
 <div id="mobile-menu" class="fixed inset-0 bg-[#111827] z-[100] flex flex-col p-10 text-white menu-hidden lg:hidden overflow-y-auto">
@@ -159,53 +158,53 @@
     <nav class="flex flex-col space-y-6 text-2xl font-black uppercase tracking-tighter">
         <a href="#" onclick="toggleMenu()">Home</a>
         
-        <div>
-            <button onclick="toggleMobileSubmenu('mobile-projects-menu', 'main-chevron')" class="flex items-center justify-between w-full uppercase">
-                Projects <i id="main-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
-            </button>
+<div>
+    <button onclick="toggleMobileSubmenu('mobile-projects-menu', 'main-chevron')" class="flex items-center justify-between w-full uppercase">
+        Projects <i id="main-chevron" class="fas fa-chevron-down text-sm transition-transform"></i>
+    </button>
             
-            <div id="mobile-projects-menu" class="hidden flex-col space-y-6 mt-6 pl-4 border-l-2 border-blue-600">
+    <div id="mobile-projects-menu" class="hidden flex-col space-y-6 mt-6 pl-4 border-l-2 border-blue-600">
                 
-                <div>
-                    <button onclick="toggleMobileSubmenu('sub-web', 'chev-web')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
-                        Web Systems <i id="chev-web" class="fas fa-plus text-xs"></i>
-                    </button>
-                    <div id="sub-web" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
-                        <a href="#projects" class="text-sm text-gray-400">Enterprise Portals</a>
-                        <a href="#projects" class="text-sm text-gray-400">SaaS Dashboards</a>
-                        <a href="#projects" class="text-sm text-gray-400">Cloud Integrations</a>
-                    </div>
-                </div>
+        <div>
+            <button onclick="toggleMobileSubmenu('sub-web', 'chev-web')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                Web Systems <i id="chev-web" class="fas fa-plus text-xs"></i>
+            </button>
+        <div id="sub-web" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+            <a href="#projects" class="text-sm text-gray-400">Enterprise Portals</a>
+            <a href="#projects" class="text-sm text-gray-400">SaaS Dashboards</a>
+            <a href="#projects" class="text-sm text-gray-400">Cloud Integrations</a>
+        </div>
+        </div>
 
-                <div>
-                    <button onclick="toggleMobileSubmenu('sub-mobile', 'chev-mobile')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
-                        Mobile Apps <i id="chev-mobile" class="fas fa-plus text-xs"></i>
-                    </button>
-                    <div id="sub-mobile" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
-                        <a href="#projects" class="text-sm text-gray-400">iOS Engineering</a>
-                        <a href="#projects" class="text-sm text-gray-400">Android Frameworks</a>
-                        <a href="#projects" class="text-sm text-gray-400">React Native</a>
-                    </div>
-                </div>
-
-                <div>
-                    <button onclick="toggleMobileSubmenu('sub-cyber', 'chev-cyber')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
-                        Cyber Security <i id="chev-cyber" class="fas fa-plus text-xs"></i>
-                    </button>
-                    <div id="sub-cyber" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
-                        <a href="#projects" class="text-sm text-gray-400">Penetration Testing</a>
-                        <a href="#projects" class="text-sm text-gray-400">Data Encryption</a>
-                        <a href="#projects" class="text-sm text-gray-400">Network Audits</a>
-                    </div>
-                </div>
-
+        <div>
+            <button onclick="toggleMobileSubmenu('sub-mobile', 'chev-mobile')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                    Mobile Apps <i id="chev-mobile" class="fas fa-plus text-xs"></i>
+            </button>
+            <div id="sub-mobile" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                <a href="#projects" class="text-sm text-gray-400">iOS Engineering</a>
+                <a href="#projects" class="text-sm text-gray-400">Android Frameworks</a>
+                <a href="#projects" class="text-sm text-gray-400">React Native</a>
             </div>
         </div>
 
-        <a href="#process" onclick="toggleMenu()">Process</a>
-        <a href="#faq" onclick="toggleMenu()">FAQ</a>
-        <a href="mailto:daidangw@gmail.com" class="bg-blue-600 px-8 py-4 text-center text-sm mt-4">Work With Me</a>
-    </nav>
+        <div>
+            <button onclick="toggleMobileSubmenu('sub-cyber', 'chev-cyber')" class="flex items-center justify-between w-full text-lg text-blue-500 uppercase">
+                Cyber Security <i id="chev-cyber" class="fas fa-plus text-xs"></i>
+            </button>
+            <div id="sub-cyber" class="hidden flex-col space-y-3 mt-3 pl-4 border-l border-gray-700">
+                <a href="#projects" class="text-sm text-gray-400">Penetration Testing</a>
+                <a href="#projects" class="text-sm text-gray-400">Data Encryption</a>
+                <a href="#projects" class="text-sm text-gray-400">Network Audits</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <a href="#process" onclick="toggleMenu()">Process</a>
+    <a href="#faq" onclick="toggleMenu()">FAQ</a>
+    <a href="mailto:daidangw@gmail.com" class="bg-blue-600 px-8 py-4 text-center text-sm mt-4">Work With Me</a>
+</nav>
 </div>
 
 <header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6">
@@ -449,7 +448,7 @@
                 <div>
                     <h4 class="text-blue-600 font-black uppercase text-xs tracking-[0.3em] mb-8">Contact</h4>
                     <p class="text-gray-500 text-[11px] font-bold uppercase mb-4 tracking-widest">Sacramento, California</p>
-                    <p class="text-white text-sm font-black">daidangw@gmai.com</p>
+                    <p class="text-white text-sm font-black">daidangw@gmail.com</p>
                 </div>
             </div>
             <div class="max-w-7xl mx-auto pt-12 border-t border-white/10 flex justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest font-bold">
