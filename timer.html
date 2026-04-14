@@ -296,26 +296,50 @@
             const list = document.getElementById('agenda-list');
             list.innerHTML = '';
             config.topics.forEach((t, i) => {
-                const tRem = t.planned - t.actual;
-                const item = document.createElement('div');
-                item.className = `topic-item ${i === session.activeIdx ? 'active-topic' : ''}`;
-                item.innerHTML = `<span><input type="checkbox" ${t.done?'checked':''} onchange="check(${i})"> ${t.title}</span><div class="topic-timer-pill ${tRem < 0 ? 'pill-overtime' : ''}">${fmt(Math.abs(tRem))}</div>`;
-                item.onclick = (e) => { if(e.target.type !== 'checkbox') { session.viewIdx = i; refreshUI(); } };
-                list.appendChild(item);
-            });
+    const tRem = t.planned - t.actual;
+    const item = document.createElement('div');
+    // We add 'active-topic' if it's the one being timed 
+    // AND a highlight if it's the one currently being viewed/inspected
+    const isViewed = i === session.viewIdx;
+    const isActive = i === session.activeIdx;
+    
+    item.className = `topic-item ${isActive ? 'active-topic' : ''}`;
+    if (isViewed && !isActive) item.style.borderLeft = "5px solid var(--gray-light)";
 
-            const subs = document.getElementById('sub-list');
-            subs.innerHTML = '';
-            config.topics[session.viewIdx]?.subs.forEach(s => {
-                subs.innerHTML += `<div style="padding:12px; border-left:3px solid #444; margin:10px 0 0 20px; color:#aaa; background:#0a0a0a;">• ${s.title}</div>`;
-            });
+    item.innerHTML = `
+        <span>
+            <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); check(${i})"> 
+            ${t.title}
+        </span>
+        <div class="topic-timer-pill ${tRem < 0 ? 'pill-overtime' : ''}">${fmt(Math.abs(tRem))}</div>
+    `;
+
+    // Click anywhere on the row to see subtopics
+    item.onclick = () => {
+        session.viewIdx = i;
+        refreshUI();
+        broadcast();
+    };
+    list.appendChild(item);
+});
         }
 
         function check(i) {
-            config.topics[i].done = !config.topics[i].done;
-            if(config.topics[i].done && i === session.activeIdx) session.activeIdx++;
-            refreshUI(); broadcast();
-        }
+    config.topics[i].done = !config.topics[i].done;
+    
+    // If we just finished the current topic
+    if(config.topics[i].done && i === session.activeIdx) {
+        session.activeIdx++;
+        // Automatically switch the view to the new active topic
+        session.viewIdx = session.activeIdx;
+    } else {
+        // If unchecking or checking a non-active item, just view what was clicked
+        session.viewIdx = i;
+    }
+    
+    refreshUI(); 
+    broadcast();
+}
 
         function openReport() {
             document.getElementById('report-modal').classList.remove('hidden');
