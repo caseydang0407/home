@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Amber Sanctuary | Premium Co-working &amp; Cinema</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#d4c3b9",
+              "on-error-container": "#93000a",
+              "primary-container": "#886042",
+              "secondary-fixed": "#f9ddcb",
+              "on-primary-container": "#ffe4d3",
+              "on-surface-variant": "#50443d",
+              "on-tertiary-fixed": "#001f24",
+              "tertiary-container": "#466f77",
+              "tertiary": "#2d575e",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#bfeaf3",
+              "tertiary-fixed-dim": "#a3ced7",
+              "primary-fixed-dim": "#efbc98",
+              "surface-container": "#f6ece7",
+              "on-primary-fixed": "#2f1501",
+              "on-secondary-fixed": "#27180d",
+              "inverse-primary": "#efbc98",
+              "primary": "#886042",
+              "surface-dim": "#e1d8d4",
+              "on-background": "#1d1815",
+              "inverse-on-surface": "#f9efea",
+              "surface-container-low": "#f7f7f6",
+              "secondary-container": "#f6dac8",
+              "on-tertiary-container": "#c5f1fa",
+              "secondary": "#6f5a4c",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#224d54",
+              "surface": "#ffffff",
+              "surface-bright": "#ffffff",
+              "on-secondary-container": "#735e50",
+              "outline": "#82746c",
+              "surface-tint": "#886042",
+              "surface-container-highest": "#eae1dc",
+              "background": "#f7f7f6",
+              "on-primary-fixed-variant": "#623f23",
+              "on-secondary-fixed-variant": "#564336",
+              "secondary-fixed-dim": "#dcc1b0",
+              "surface-container-high": "#f0e6e2",
+              "surface-variant": "#eae1dc",
+              "primary-fixed": "#ffdcc4",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-surface": "#1f1b18",
+              "inverse-surface": "#342f2d",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-gradient {
+            background: linear-gradient(to top, rgba(33, 25, 17, 0.8) 0%, rgba(33, 25, 17, 0) 60%);
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-sm">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-[#886042] dark:text-[#f7f7f6]">
+                Amber Sanctuary
+            </div>
+<div class="hidden md:flex items-center gap-8 font-['Plus_Jakarta_Sans'] text-sm tracking-wide">
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#886042] transition-colors" href="#">Services</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#886042] transition-colors" href="#">Menu</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#886042] transition-colors" href="#">Bookings</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-[#886042] transition-colors" href="#">About</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-stone-500 hover:text-primary transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="text-stone-500 hover:text-primary transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="h-full w-full object-cover" data-alt="User profile settings avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVIKPH61QN7W0DfjiMVEB0f5aLYwUuvq3DBaMkqiOajDBaAhREAcB3DLh2P7QAN__NJ9ZwDuzF5l89LBEWpZCRM4ka41F1wq99DAQvOc05W3-YEb2zFIr6WNRmFoCHt_UHHyM4m7cHD95rTpQ651sIrZ6h77LGzIL8U6ulZ0bBtMA6HC9QHd4kNp3xa5itOitPsa156KGVH1Xc5ByHQEGNj-j8Gxx8-tTyqGF6zamTFz2yMy-dsf1c9Q3jpn7nXShefDufuz5igw"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section: Immersive Brand Identity -->
+<section class="relative h-[870px] w-full overflow-hidden">
+<img class="absolute inset-0 h-full w-full object-cover" data-alt="Luxurious warm wood co-working space with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0Y3FNFDbNjut1A_hcszwXj6N_NDdCP4rc6Flkqx3Yun-5Soh4hyFfurJBtnICNoiK4i4iI7tjqScmbOlwEWbIZ9LHb7q0WOcL0SRP7etpuOT3Db96h2Be9GPX0UKhRbE0foXD3Q1QhRvAPC3ttQFSdBBP6-baYrrTEXVEnzYobeqiil-5N5ZTAjrqqeSBf18FUHuCUV_ggem4Tqq0ks3hYy-sbnRTytu_VKzgZXHIL8bZ3pW9Mh3SYGSgsmKXzbBa7Rr5WJ8EwA"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="relative h-full max-w-7xl mx-auto px-8 flex flex-col justify-end pb-24">
+<div class="space-y-4 max-w-3xl">
+<span class="font-label text-xs uppercase tracking-[0.3em] text-on-primary-container/80">Premium Multi-Service Destination</span>
+<h1 class="text-6xl md:text-8xl font-bold text-on-primary leading-[0.9] tracking-tighter">
+                        Find your <br/><span class="text-primary-fixed">Sanctuary.</span>
+</h1>
+<p class="text-lg text-on-primary/70 font-medium max-w-xl pt-4">
+                        A curated escape where productivity meets cinematic comfort. Discover our boutique spaces designed for focused work and high-fidelity relaxation.
+                    </p>
+<div class="flex gap-4 pt-8">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-semibold flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-lg">
+                            Book Experience
+                            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="backdrop-blur-md bg-white/10 border border-white/20 text-on-primary px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-all">
+                            View Menu
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Bento Grid -->
+<section class="max-w-7xl mx-auto px-8 py-24">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="text-sm font-label uppercase tracking-widest text-primary font-bold mb-2">The Sanctuary Offerings</h2>
+<h3 class="text-4xl font-headline font-bold text-on-background">Choose your space</h3>
+</div>
+<div class="hidden md:flex gap-2">
+<button class="p-3 rounded-full border border-outline-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-3 rounded-full border border-outline-variant hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Co-working: Large Anchor -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface shadow-md aspect-[16/9] md:aspect-auto h-[400px]">
+<img class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Modern high-end co-working lounge with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFXdGB1UYt9iwAlxizVoqUIIkTE9dx82DeyzChtWPJbOJ4QdCqF-1x_BUkgrLpZ4nVyuBIO_KQNpgVd7MLmC7SmZsZc9OQnSaBVGEKh8qRhBKAgQ7jSotlVM0uMPlB75lZhao6hJQWXJSan30oLLjALU6I7EH3E3JCJUOa3UZG9WEYRFl1zOTNkGAAwx-P_PpJokak92MX0QMwxOpNIv-WMFNcdw0KizsqgaixRB8Tc_yYYOx1m4qNh1-yNXEJ2ucul-ysHE2m1A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/90 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<div class="bg-primary/90 text-on-primary text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full w-fit mb-4">Focus Zone</div>
+<h4 class="text-3xl font-bold text-white mb-2">Co-working</h4>
+<p class="text-white/70 max-w-md text-sm">Quiet, ergonomic workspaces with ultra-fast connectivity and artisan coffee on demand.</p>
+</div>
+</div>
+<!-- Cinema in Bed: Tall Accent -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl bg-surface shadow-md h-[400px]">
+<img class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Cozy cinema room with premium beds and large screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpENRzuA-2sXyqfLi_oYVBPUhNDKe-fvbMow894gegAR2QfcZQX5zmRpkO0AUwIGVUA0e0IyLqdjzFT-YwdCky6rq7YQ3x0wazJLOvoZ1C2ZCl3glcMoDJevFRpHH7evKwhaeuLxGxCHx5NAsJgUaVxQJ1XgiA2gjQ47etbZAN0E-tXpttnV3qeUNbEhDjcw4tgQsJnL3Vxtt9uXBa0o7suM8hc4o8kK8aEN20z8lo8pGSJ6yLpk4t0TVq5dXla4ib-FqciQvd2g"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/90 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h4 class="text-2xl font-bold text-white mb-2">Cinema in Bed</h4>
+<p class="text-white/70 text-sm">Ultimate luxury screening with cloud-like bedding and surround sound.</p>
+</div>
+</div>
+<!-- Cinema in Box -->
+<div class="md:col-span-6 group relative overflow-hidden rounded-xl bg-surface shadow-md h-[320px]">
+<img class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Private cinema box for small groups" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBth-ByGbs-MQ4UKpwYXvcGdvBzwmiDJXdhDRlRJ9_1ScBNCu0CxEObZ0N0D2hGVo1wcrEZWo8sT0rAU4L-4oJ69b4TTNWYdxT4qQBHub6por6nSFzLkqD2blyi6V82oDZZImqXIhqet0jv-mh-aIhYkeUMjKx4Gyy466Ti0Ld-ZYxfA9N-13mUqCkueYwEDK6d5xI87dss8rmfCQwM1iiLFBWlmbkNZ045g0YlC-yxY_WBEW0yOh4B9LIgNCkvteNcEFAnQmKSow"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/90 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h4 class="text-2xl font-bold text-white mb-2">Cinema in Box</h4>
+<p class="text-white/70 text-sm">Private acoustic pods for an intimate viewing experience with friends.</p>
+</div>
+</div>
+<!-- Couple Gaming -->
+<div class="md:col-span-6 group relative overflow-hidden rounded-xl bg-surface shadow-md h-[320px]">
+<img class="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Modern gaming setup for couples with ergonomic chairs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQXyiKwwmRZTyOZEduCKTXCxs1P78nWG8eVrXh3j9VP9ZZOiy8tOSoy2KvwkPHG4Rv8pDkDT4cCmkU7Vu79zfiewKkFq0dTXRwnflibQtVX2q93K45BDRNBbD4vqKuLwegKmO8aW2UMoArSzsmtO-aG1-HKCxkcfAl8AQAzJrgkAbljxuvzZymPU_RsjkJobSJK8UDf0gjfOBWKSnVRg_as8TUsl1ql_VYsDMlkkUcl1qAdvTNp4qHxYtWFDCUXRcnLWhUI3zgeg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/90 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h4 class="text-2xl font-bold text-white mb-2">Couple Gaming</h4>
+<p class="text-white/70 text-sm">High-performance dual stations designed for shared victory and comfort.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Access Section -->
+<section class="bg-surface-container py-24">
+<div class="max-w-7xl mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+<div class="md:col-span-1">
+<h2 class="text-4xl font-bold text-on-surface leading-tight mb-6">Seamlessly integrated <br/>for your lifestyle.</h2>
+<p class="text-on-surface-variant mb-8">Access our full range of services with a single touch. No memberships required for discovery.</p>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Instant Booking</h5>
+<p class="text-sm text-on-surface-variant">Real-time availability for all spaces.</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">In-Seat Dining</h5>
+<p class="text-sm text-on-surface-variant">Chef-curated menu delivered to your spot.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-2 grid grid-cols-2 gap-4">
+<div class="bg-surface p-8 rounded-xl shadow-md border border-outline-variant/20 flex flex-col justify-between h-64 hover:-translate-y-1 transition-all">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="event_available">event_available</span>
+<div>
+<h4 class="text-xl font-bold mb-2">Bookings</h4>
+<p class="text-sm text-on-surface-variant mb-4">Secure your favorite sanctuary box or bed in seconds.</p>
+<a class="text-primary font-bold text-sm uppercase tracking-widest flex items-center gap-1 group" href="#">
+                                    Reserve Now
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+<div class="bg-primary text-on-primary p-8 rounded-xl shadow-md flex flex-col justify-between h-64 hover:-translate-y-1 transition-all">
+<span class="material-symbols-outlined text-4xl text-on-primary-container" data-icon="menu_book">menu_book</span>
+<div>
+<h4 class="text-xl font-bold mb-2">Our Menu</h4>
+<p class="text-on-primary/80 text-sm mb-4">Explore our seasonal beverages and artisanal snacks.</p>
+<a class="text-white font-bold text-sm uppercase tracking-widest flex items-center gap-1 group" href="#">
+                                    Browse Menu
+                                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full py-12 px-8 bg-[#f7f7f6] dark:bg-stone-950 border-t border-stone-200 dark:border-stone-800">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+<div class="space-y-4">
+<div class="text-lg font-bold text-[#886042]">Amber Sanctuary</div>
+<p class="text-stone-500 text-sm">Redefining modern relaxation and productivity through curated physical spaces.</p>
+</div>
+<div>
+<h5 class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#886042] mb-6">Navigation</h5>
+<ul class="space-y-4 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">Services</a></li>
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">Menu</a></li>
+<li><a class="text-[#886042] underline" href="#">Bookings</a></li>
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">FAQ</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#886042] mb-6">Company</h5>
+<ul class="space-y-4 font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest">
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">Contact Us</a></li>
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">Privacy Policy</a></li>
+<li><a class="text-stone-500 hover:text-[#886042]" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-[#886042] mb-6">Connect</h5>
+<div class="flex gap-4">
+<div class="h-10 w-10 rounded-full bg-stone-100 dark:bg-stone-900 flex items-center justify-center hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="share">share</span>
+</div>
+<div class="h-10 w-10 rounded-full bg-stone-100 dark:bg-stone-900 flex items-center justify-center hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-stone-200 dark:border-stone-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-['Plus_Jakarta_Sans'] text-xs uppercase tracking-widest text-stone-500">© 2024 Amber Sanctuary. All rights reserved.</div>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-stone-400" data-icon="language">language</span>
+<span class="material-symbols-outlined text-stone-400" data-icon="payments">payments</span>
+</div>
+</div>
+</footer>
+<!-- Mobile Navigation Shell (Bottom) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-white/80 backdrop-blur-md z-50 flex justify-around items-center h-16 px-4 border-t border-stone-100">
+<button class="flex flex-col items-center gap-1 text-[#886042]">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Book</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-stone-400">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</button>
+</nav>
+<!-- Contextual FAB (Only for main landing screens) -->
+<button class="fixed bottom-24 right-8 h-14 w-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all md:bottom-12 md:right-12 z-40">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</button>
+</body></html>
