@@ -104,7 +104,7 @@ async function lookup() {
     if (mode === 'borrow' && r.borrowed) say('This book is already checked out.', 'err');
     else if (mode === 'return' && !r.borrowed) say('This book is not checked out.', 'err');
     else say('');
-  } catch (e) { say('Could not look up the book. Check your connection.', 'err'); }
+  } catch (e) { say('Lookup failed: ' + e.message, 'err'); }
 }
 
 $('submitBtn').onclick = async () => {
