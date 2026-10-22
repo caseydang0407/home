@@ -122,7 +122,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbyb6Wt0IEpKQengw53qHIBvhGMrL4rM-iD_PP_e9ORytMzAXoV6tHAH1z7uXDwZAsda/exec';   // the /exec URL from Apps Script
+const API = 'https://script.google.com/macros/s/AKfycbyVG2esnriaSYERD8m_sFlC0IkHTX6cQjp2o_4nlExmL_GNbhLAQzfALYj6KxkzFFei/exec';   // the /exec URL from Apps Script
 const CLUB_NAME = 'Natasha Book Club';           // your club's name
 let mode = 'borrow', scanner = null, current = null, token = 0, last = '', hits = 0;
 const $ = id => document.getElementById(id);
@@ -196,19 +196,33 @@ $('torchBtn').onclick = () => setTorch(!$('torchBtn').dataset.on);
 
 $('scanBtn').onclick = async () => {
   say(''); last = ''; hits = 0;
-  try {
-    $('scanBtn').hidden = true; $('reader').hidden = false; $('tools').hidden = false; $('hint').hidden = false;
-    scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13], experimentalFeatures: { useBarCodeDetectorIfSupported: true }, verbose: false });
-    await scanner.start({ facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-      { fps: 15, disableFlip: true, qrbox: w => ({ width: Math.floor(w * .85), height: 110 }) },
-      code => {
-        if (!validIsbn(code)) return;                         // ignore misreads: must be a real ISBN (978/979 + valid check digit)
-        if (code === last) hits++; else { last = code; hits = 1; }
-        if (hits < 2) return;                                  // same number twice in a row before we accept it
-        beep(); stopScan(); $('isbn').value = code; lookup();
-      });
-    $('torchBtn').hidden = !(await setTorch(true));
-  } catch (e) { stopScan(); say('Camera not available. Allow camera access, or type the ISBN.', 'err'); }
+  $('scanBtn').hidden = true; $('reader').hidden = false; $('tools').hidden = true; $('hint').hidden = false;
+  const onCode = code => {
+    if (!validIsbn(code)) return;                         // ignore misreads: must be a real ISBN (978/979 + valid check digit)
+    if (code === last) hits++; else { last = code; hits = 1; }
+    if (hits < 2) return;                                  // same number twice in a row before we accept it
+    beep(); stopScan(); $('isbn').value = code; lookup();
+  };
+  const box = w => ({ width: Math.floor(w * .85), height: 110 });
+  const attempts = [   // sharper video first; if the phone refuses, fall back to the basic camera setup
+    { cfg: { fps: 15, disableFlip: true, qrbox: box, videoConstraints: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } } },
+    { cfg: { fps: 10, qrbox: box } }
+  ];
+  let lastErr = null;
+  for (const a of attempts) {
+    try {
+      scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13], experimentalFeatures: { useBarCodeDetectorIfSupported: true }, verbose: false });
+      await scanner.start({ facingMode: 'environment' }, a.cfg, onCode);   // this object must hold exactly one key
+      $('tools').hidden = false;
+      $('torchBtn').hidden = !(await setTorch(true));
+      return;
+    } catch (e) { lastErr = e; try { await scanner.stop(); } catch (_) {} scanner = null; }
+  }
+  stopScan();
+  const msg = String(lastErr && (lastErr.message || lastErr));
+  say(/denied|NotAllowed|Permission/i.test(msg)
+    ? 'Camera permission is blocked. Allow camera access for this site in your browser settings, then try again.'
+    : 'Camera could not start (' + msg.slice(0, 80) + '). You can type the ISBN instead.', 'err');
 };
 $('isbn').addEventListener('change', () => {
   const v = $('isbn').value;
