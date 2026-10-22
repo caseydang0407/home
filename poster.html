@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book club poster</title>
+<style>
+  @page { size: letter; margin: 0.6in; }
+  body { margin:0; font-family: Georgia, serif; color:#15231d; text-align:center; }
+  .sheet { max-width:7.3in; margin:0 auto; padding:2rem 1rem; border:6px double #1f5b47; }
+  h1 { font-size:3rem; line-height:1.1; margin:.5rem 0; }
+  p.lead { font:1.5rem system-ui, sans-serif; margin:0 0 1.5rem; }
+  #qr svg { width:4.6in; height:4.6in; }
+  ol { display:inline-block; text-align:left; font:1.25rem/1.7 system-ui, sans-serif; margin:1.5rem 0 .5rem; }
+  .url { font:.85rem system-ui, sans-serif; color:#5b6b64; word-break:break-all; }
+  button { margin:1rem; padding:.7rem 1.4rem; font:700 1rem system-ui, sans-serif; cursor:pointer; }
+  @media print { button { display:none; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1 id="club"></h1>
+  <p class="lead">Borrow or return a book. Scan to start.</p>
+  <div id="qr"></div>
+  <ol><li>Scan this code with your phone camera</li><li>Tap "Scan the book's barcode"</li><li>Enter your details (just once)</li></ol>
+  <div class="url" id="url"></div>
+</div>
+<button onclick="print()">Print poster</button>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+const CLUB_NAME = 'Captain Cable Book Club';                                   // your club's name
+const PAGE_URL = new URL('index.html', location.href).href;          // or paste your full page address here
+document.getElementById('club').textContent = CLUB_NAME;
+document.getElementById('url').textContent = PAGE_URL;
+const qr = qrcode(0, 'M'); qr.addData(PAGE_URL); qr.make();
+document.getElementById('qr').innerHTML = qr.createSvgTag(8, 0);
+</script>
+</body>
+</html>
