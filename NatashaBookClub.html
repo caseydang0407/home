@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a7c7a">
+<title>Book club checkout</title>
+<style>
+  :root { --bg:#eaf6f5; --card:#fff; --ink:#0f2b3d; --muted:#4f6b7a; --teal:#0a7c7a; --navy:#12355b; --line:#cfe3e3; --err:#b3261e; --heart:#d6455d; --soft:#e3f3f2; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b1a22; --card:#12262f; --ink:#e4f1f3; --muted:#9bb6bf; --teal:#4cc3bd; --navy:#0e2a44; --line:#24424d; --err:#ff8f86; --heart:#ff7d93; --soft:#173540; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-text-size-adjust:100%; }
+  header { background:linear-gradient(135deg, var(--teal), var(--navy)); color:#fff; padding:max(1.1rem, env(safe-area-inset-top)) 1rem 0; position:relative; overflow:hidden; }
+  header .in { max-width:36rem; margin:0 auto; display:flex; align-items:center; gap:.75rem; }
+  header svg.logo { width:2.4rem; height:2.4rem; flex:none; }
+  h1 { font-size:clamp(1.3rem, 5.5vw, 1.8rem); line-height:1.15; margin:0; font-weight:800; }
+  header p { margin:0; opacity:.85; font-size:.9rem; }
+  .ecg { display:block; width:100%; height:2.2rem; margin-top:.4rem; }
+  main { max-width:36rem; margin:0 auto; padding:1rem 1rem calc(3rem + env(safe-area-inset-bottom)); }
+  .tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:.4rem; background:var(--soft); padding:.3rem; border-radius:12px; margin-bottom:1.1rem; }
+  .tabs button { min-height:48px; border:0; border-radius:9px; background:none; font:inherit; font-weight:700; color:var(--muted); cursor:pointer; }
+  .tabs button[aria-selected="true"] { background:var(--card); color:var(--teal); box-shadow:0 1px 4px rgba(0,0,0,.15); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.1rem; }
+  label { display:block; margin:1rem 0 .3rem; font-weight:700; font-size:.95rem; }
+  input { width:100%; min-height:48px; padding:.7rem .8rem; font:inherit; font-size:16px; color:var(--ink); background:var(--bg); border:2px solid var(--line); border-radius:10px; }
+  input:focus { border-color:var(--teal); outline:none; }
+  .btn { width:100%; min-height:52px; margin-top:1rem; padding:.8rem; font:inherit; font-weight:800; border-radius:12px; cursor:pointer; background:var(--teal); color:#fff; border:2px solid var(--teal); }
+  .btn.alt { background:var(--card); color:var(--teal); }
+  .btn:disabled { opacity:.6; }
+  button:focus-visible { outline:3px solid var(--heart); outline-offset:2px; }
+  .link { background:none; border:0; color:var(--teal); text-decoration:underline; font:inherit; cursor:pointer; padding:0; }
+  #reader { margin-top:1rem; border-radius:12px; overflow:hidden; border:3px solid var(--teal); }
+  .tools { display:flex; gap:.5rem; margin-top:.6rem; }
+  .tools .btn { margin-top:0; min-height:46px; font-size:.95rem; }
+  .book { display:flex; gap:.9rem; margin-top:1rem; padding:.8rem; background:var(--soft); border-radius:12px; border-left:5px solid var(--teal); }
+  .book img { width:64px; height:96px; flex:none; object-fit:cover; border-radius:4px; background:var(--line); }
+  .book b { display:block; font-size:1.1rem; line-height:1.3; }
+  .badge { display:inline-block; margin-top:.3rem; padding:.1rem .6rem; border-radius:99px; font-size:.82rem; font-weight:800; background:var(--teal); color:#fff; }
+  .badge.out { background:var(--heart); }
+  .muted { color:var(--muted); }
+  #msg { margin-top:1rem; font-weight:700; } #msg.err { color:var(--err); } #msg.ok { color:var(--teal); }
+  .spin { width:30px; height:30px; margin:1rem auto 0; border:4px solid var(--line); border-top-color:var(--teal); border-radius:50%; animation:s .8s linear infinite; }
+  @keyframes s { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation-duration:3s; } }
+  .band { border:2px solid var(--teal); border-radius:14px; overflow:hidden; text-align:center; background:var(--card); }
+  .band .top { background:var(--teal); color:#fff; font-weight:800; letter-spacing:.12em; padding:.45rem; font-size:.85rem; }
+  .band .body { padding:1.2rem 1rem; }
+  .band .t { font-size:1.35rem; font-weight:800; line-height:1.25; }
+  .due { display:inline-block; margin-top:.9rem; padding:.4rem 1rem; border:3px solid var(--heart); color:var(--heart); font-weight:800; font-size:1.2rem; border-radius:8px; transform:rotate(-3deg); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(8.5rem, 1fr)); gap:.9rem; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.6rem; }
+  .tile img { width:100%; aspect-ratio:2/3; object-fit:cover; border-radius:6px; background:var(--line); }
+  .tile b { display:block; font-size:.92rem; line-height:1.3; margin-top:.45rem; }
+  .tile small { display:block; }
+  [hidden] { display:none !important; }
+  @media (min-width:600px) { .panel { padding:1.5rem; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="in">
+    <svg class="logo" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="4" y="4" width="40" height="40" rx="11" fill="rgba(255,255,255,.15)"/>
+      <path d="M24 37S10 28.5 10 19.5C10 14.8 13.5 12 17 12c3 0 5.2 1.6 7 4.2C25.8 13.6 28 12 31 12c3.5 0 7 2.8 7 7.500C38 28.5 24 37 24 37z"/>
+      <path d="M13 24h6l2.500-5 4 9 2.500-4H35" stroke-width="2.4"/>
+    </svg>
+    <div><h1 id="club">Book club checkout</h1><p>Borrow, return, and browse our shelf</p></div>
+  </div>
+  <svg class="ecg" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="0,22 70,22 82,22 90,6 100,36 108,22 140,22 170,22 180,14 188,28 196,22 300,22" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" vector-effect="non-scaling-stroke"/>
+  </svg>
+</header>
+
+<main>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-borrow" aria-selected="true">Check out</button>
+    <button role="tab" id="t-return" aria-selected="false">Return</button>
+    <button role="tab" id="t-shelf" aria-selected="false">Our shelf</button>
+  </div>
+
+  <section class="panel" id="scanView">
+    <button class="btn alt" id="scanBtn">Scan the book's barcode</button>
+    <div id="reader" hidden></div>
+    <div class="tools" id="tools" hidden>
+      <button class="btn alt" id="torchBtn" hidden>Flashlight: off</button>
+      <button class="btn alt" id="cancelBtn">Cancel</button>
+    </div>
+    <label for="isbn">Or type the ISBN</label>
+    <input id="isbn" inputmode="numeric" autocomplete="off" placeholder="978…">
+    <div class="book" id="book" hidden>
+      <img id="cover" alt="">
+      <div><b id="bTitle"></b><span class="muted" id="bAuthor"></span><br><span class="badge" id="bStatus"></span></div>
+    </div>
+    <div id="borrowFields" hidden>
+      <p id="who" class="muted" hidden></p>
+      <label for="name">Your name</label><input id="name" autocomplete="name">
+      <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+      <label for="phone">Phone number</label><input id="phone" type="tel" autocomplete="tel">
+    </div>
+    <button class="btn" id="submitBtn" hidden>Check out this book</button>
+  </section>
+
+  <section id="doneView" hidden>
+    <div class="band">
+      <div class="top" id="dHead"></div>
+      <div class="body">
+        <div class="t" id="dTitle"></div>
+        <div class="muted" id="dAuthor"></div>
+        <div id="dDueWrap"><div class="due">Due <span id="dDue"></span></div></div>
+      </div>
+    </div>
+    <button class="btn" id="againBtn">Check out or return another</button>
+  </section>
+
+  <section id="shelfView" hidden><div class="grid" id="grid"></div></section>
+
+  <div class="spin" id="spin" hidden role="status" aria-label="Loading"></div>
+  <div id="msg" role="status"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzifByBVchVFk9JTF0mfn_Fopqr6p3dG2wyIR5LjD2oLZBR_uLKCABkYg4kYwX-jClw/exec';   // the /exec URL from Apps Script
+const CLUB_NAME = 'Natasha Book Club';           // your club's name
+let mode = 'borrow', scanner = null, current = null;
+const $ = id => document.getElementById(id);
+const coverUrl = isbn => 'https://covers.openlibrary.org/b/isbn/' + isbn + '-M.jpg?default=false';
+
+$('club').textContent = CLUB_NAME; document.title = CLUB_NAME;
+
+function beep() {
+  try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain();
+    o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .12); } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate(120);
+}
+function say(t, cls) { $('msg').textContent = t; $('msg').className = cls || ''; }
+function busy(on) { $('spin').hidden = !on; }
+function view(v) { ['scan', 'done', 'shelf'].forEach(x => $(x + 'View').hidden = x !== v); }
+
+function reset() {
+  stopScan(); current = null; $('isbn').value = ''; say('');
+  ['book', 'borrowFields', 'submitBtn'].forEach(id => $(id).hidden = true);
+  view('scan');
+}
+function setMode(m) {
+  mode = m;
+  ['borrow', 'return', 'shelf'].forEach(x => $('t-' + x).setAttribute('aria-selected', x === m));
+  $('submitBtn').textContent = m === 'borrow' ? 'Check out this book' : 'Return this book';
+  if (m === 'shelf') { stopScan(); say(''); view('shelf'); loadShelf(); } else reset();
+}
+['borrow', 'return', 'shelf'].forEach(m => $('t-' + m).onclick = () => setMode(m));
+$('againBtn').onclick = () => setMode(mode === 'shelf' ? 'borrow' : mode);
+
+// Returning members: details are kept on this phone only
+function loadMember() {
+  try { const m = JSON.parse(localStorage.getItem('member') || 'null');
+    if (m) { $('name').value = m.name; $('email').value = m.email; $('phone').value = m.phone;
+      $('who').hidden = false; $('who').textContent = 'Welcome back, ' + m.name + '. ';
+      const b = document.createElement('button'); b.className = 'link'; b.textContent = 'Not you?';
+      b.onclick = () => { localStorage.removeItem('member'); ['name', 'email', 'phone'].forEach(i => $(i).value = ''); $('who').hidden = true; };
+      $('who').appendChild(b); } } catch (e) {}
+}
+
+// ---- Scanner with flashlight ----
+async function setTorch(on) {
+  try {
+    const f = scanner.getRunningTrackCameraCapabilities().torchFeature();
+    if (!f.isSupported()) return false;
+    await f.apply(on);
+    $('torchBtn').textContent = 'Flashlight: ' + (on ? 'on' : 'off'); $('torchBtn').dataset.on = on ? '1' : '';
+    return true;
+  } catch (e) { return false; }
+}
+function stopScan() {
+  const s = scanner; scanner = null;
+  if (s) s.stop().catch(() => {});
+  $('reader').hidden = true; $('tools').hidden = true; $('torchBtn').hidden = true; $('scanBtn').hidden = false;
+}
+$('cancelBtn').onclick = stopScan;
+$('torchBtn').onclick = () => setTorch(!$('torchBtn').dataset.on);
+
+$('scanBtn').onclick = async () => {
+  say('');
+  try {
+    $('scanBtn').hidden = true; $('reader').hidden = false; $('tools').hidden = false;
+    scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13] });
+    await scanner.start({ facingMode: 'environment' },
+      { fps: 10, qrbox: (w) => ({ width: Math.min(Math.floor(w * .9), 320), height: 120 }) },
+      code => { beep(); stopScan(); $('isbn').value = code; lookup(); });
+    $('torchBtn').hidden = !(await setTorch(true));   // flashlight turns on automatically when the phone supports it
+  } catch (e) { stopScan(); say('Camera not available. Allow camera access, or type the ISBN.', 'err'); }
+};
+$('isbn').addEventListener('change', lookup);
+
+async function lookup() {
+  const isbn = $('isbn').value.replace(/\D/g, '');
+  if (isbn.length < 10) return;
+  busy(true); say('');
+  try {
+    const r = await (await fetch(API + '?isbn=' + isbn)).json();
+    current = { isbn, borrowed: r.borrowed };
+    $('bTitle').textContent = r.title; $('bAuthor').textContent = r.author;
+    $('cover').hidden = false; $('cover').onerror = () => $('cover').hidden = true; $('cover').src = coverUrl(isbn);
+    $('book').hidden = false;
+    const ok = mode === 'borrow' ? !r.borrowed : r.borrowed;
+    $('bStatus').textContent = r.borrowed ? 'Checked out' : 'Available'; $('bStatus').className = 'badge' + (r.borrowed ? ' out' : '');
+    $('borrowFields').hidden = !(ok && mode === 'borrow'); $('submitBtn').hidden = !ok;
+    if (ok && mode === 'borrow') loadMember();
+    if (!ok) say(mode === 'borrow' ? 'This book is already checked out.' : 'This book is not checked out.', 'err');
+  } catch (e) { say('Lookup failed: ' + e.message, 'err'); }
+  busy(false);
+}
+
+$('submitBtn').onclick = async () => {
+  const p = { action: mode, isbn: current.isbn, name: $('name').value.trim(), email: $('email').value.trim(), phone: $('phone').value.trim() };
+  $('submitBtn').disabled = true; busy(true); say('');
+  try {
+    const r = await (await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(p) })).json();
+    if (r.ok) {
+      beep();
+      if (mode === 'borrow') localStorage.setItem('member', JSON.stringify({ name: p.name, email: p.email, phone: p.phone }));
+      $('dHead').textContent = mode === 'borrow' ? 'BOOK ON LOAN' : 'RETURNED. THANK YOU!';
+      $('dTitle').textContent = r.title; $('dAuthor').textContent = r.author || '';
+      $('dDueWrap').hidden = mode !== 'borrow'; $('dDue').textContent = r.due || '';
+      say('A confirmation email is on its way.', 'ok');
+      view('done');
+    } else say(r.error, 'err');
+  } catch (e) { say('Could not save: ' + e.message, 'err'); }
+  busy(false); $('submitBtn').disabled = false;
+};
+
+async function loadShelf() {
+  $('grid').textContent = ''; busy(true);
+  try {
+    const r = await (await fetch(API + '?action=shelf')).json();
+    if (!r.books.length) say('No books on the shelf yet. Borrowed books appear here automatically.');
+    r.books.forEach(b => {
+      const t = document.createElement('div'); t.className = 'tile';
+      const img = document.createElement('img'); img.alt = ''; img.onerror = () => img.style.visibility = 'hidden'; img.src = coverUrl(b.isbn);
+      const ti = document.createElement('b'); ti.textContent = b.title;
+      const au = document.createElement('small'); au.className = 'muted'; au.textContent = b.author;
+      const st = document.createElement('span'); st.className = 'badge' + (b.due ? ' out' : ''); st.textContent = b.due ? 'Out until ' + b.due : 'Available';
+      t.append(img, ti, au, st); $('grid').appendChild(t);
+    });
+  } catch (e) { say('Could not load the shelf: ' + e.message, 'err'); }
+  busy(false);
+}
+</script>
+</body>
+</html>
