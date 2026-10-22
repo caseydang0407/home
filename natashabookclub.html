@@ -81,6 +81,7 @@
   <section class="panel" id="scanView">
     <button class="btn alt" id="scanBtn">Scan the book's barcode</button>
     <div id="reader" hidden></div>
+    <p class="muted" id="hint" hidden style="margin:.5rem 0 0;font-size:.9rem">Hold the phone about 6 to 8 inches from the barcode on the back cover. Keep it steady and well lit.</p>
     <div class="tools" id="tools" hidden>
       <button class="btn alt" id="torchBtn" hidden>Flashlight: off</button>
       <button class="btn alt" id="cancelBtn">Cancel</button>
@@ -93,6 +94,7 @@
     </div>
     <div id="borrowFields" hidden>
       <p id="who" class="muted" hidden></p>
+      <div id="titleWrap" hidden><label for="titleIn">Book title (we couldn't find it, so please type it)</label><input id="titleIn" autocomplete="off"></div>
       <label for="name">Your name</label><input id="name" autocomplete="name">
       <label for="email">Email</label><input id="email" type="email" autocomplete="email">
       <label for="phone">Phone number</label><input id="phone" type="tel" autocomplete="tel">
@@ -120,14 +122,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbzifByBVchVFk9JTF0mfn_Fopqr6p3dG2wyIR5LjD2oLZBR_uLKCABkYg4kYwX-jClw/exec';   // the /exec URL from Apps Script
+const API = 'https://script.google.com/macros/s/AKfycbyb6Wt0IEpKQengw53qHIBvhGMrL4rM-iD_PP_e9ORytMzAXoV6tHAH1z7uXDwZAsda/exec';   // the /exec URL from Apps Script
 const CLUB_NAME = 'Natasha Book Club';           // your club's name
-let mode = 'borrow', scanner = null, current = null;
+let mode = 'borrow', scanner = null, current = null, token = 0, last = '', hits = 0;
 const $ = id => document.getElementById(id);
 const coverUrl = isbn => 'https://covers.openlibrary.org/b/isbn/' + isbn + '-M.jpg?default=false';
 
 $('club').textContent = CLUB_NAME; document.title = CLUB_NAME;
+fetch(API + '?ping=1').catch(() => {});   // wake the backend up while the page loads
 
+function validIsbn(s) {
+  s = s.replace(/[^0-9Xx]/g, '').toUpperCase();
+  if (/^97[89]\d{10}$/.test(s)) { let t = 0; for (let i = 0; i < 12; i++) t += +s[i] * (i % 2 ? 3 : 1); return (10 - t % 10) % 10 === +s[12]; }
+  if (/^\d{9}[\dX]$/.test(s)) { let t = 0; for (let i = 0; i < 10; i++) t += (s[i] === 'X' ? 10 : +s[i]) * (10 - i); return t % 11 === 0; }
+  return false;
+}
+async function getJson(url) {   // GET with one automatic retry and a timeout
+  for (let i = 0; i < 2; i++) {
+    try { const c = new AbortController(), t = setTimeout(() => c.abort(), 25000);
+      const r = await fetch(url, { signal: c.signal }); clearTimeout(t); return await r.json();
+    } catch (e) { if (i) throw e; }
+  }
+}
 function beep() {
   try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain();
     o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .12); } catch (e) {}
@@ -138,8 +154,8 @@ function busy(on) { $('spin').hidden = !on; }
 function view(v) { ['scan', 'done', 'shelf'].forEach(x => $(x + 'View').hidden = x !== v); }
 
 function reset() {
-  stopScan(); current = null; $('isbn').value = ''; say('');
-  ['book', 'borrowFields', 'submitBtn'].forEach(id => $(id).hidden = true);
+  stopScan(); current = null; token++; $('isbn').value = ''; $('titleIn').value = ''; say(''); busy(false);
+  ['book', 'borrowFields', 'submitBtn', 'titleWrap'].forEach(id => $(id).hidden = true);
   view('scan');
 }
 function setMode(m) {
@@ -151,7 +167,6 @@ function setMode(m) {
 ['borrow', 'return', 'shelf'].forEach(m => $('t-' + m).onclick = () => setMode(m));
 $('againBtn').onclick = () => setMode(mode === 'shelf' ? 'borrow' : mode);
 
-// Returning members: details are kept on this phone only
 function loadMember() {
   try { const m = JSON.parse(localStorage.getItem('member') || 'null');
     if (m) { $('name').value = m.name; $('email').value = m.email; $('phone').value = m.phone;
@@ -174,48 +189,64 @@ async function setTorch(on) {
 function stopScan() {
   const s = scanner; scanner = null;
   if (s) s.stop().catch(() => {});
-  $('reader').hidden = true; $('tools').hidden = true; $('torchBtn').hidden = true; $('scanBtn').hidden = false;
+  $('reader').hidden = true; $('tools').hidden = true; $('hint').hidden = true; $('torchBtn').hidden = true; $('scanBtn').hidden = false;
 }
 $('cancelBtn').onclick = stopScan;
 $('torchBtn').onclick = () => setTorch(!$('torchBtn').dataset.on);
 
 $('scanBtn').onclick = async () => {
-  say('');
+  say(''); last = ''; hits = 0;
   try {
-    $('scanBtn').hidden = true; $('reader').hidden = false; $('tools').hidden = false;
-    scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13] });
-    await scanner.start({ facingMode: 'environment' },
-      { fps: 10, qrbox: (w) => ({ width: Math.min(Math.floor(w * .9), 320), height: 120 }) },
-      code => { beep(); stopScan(); $('isbn').value = code; lookup(); });
-    $('torchBtn').hidden = !(await setTorch(true));   // flashlight turns on automatically when the phone supports it
+    $('scanBtn').hidden = true; $('reader').hidden = false; $('tools').hidden = false; $('hint').hidden = false;
+    scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13], experimentalFeatures: { useBarCodeDetectorIfSupported: true }, verbose: false });
+    await scanner.start({ facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+      { fps: 15, disableFlip: true, qrbox: w => ({ width: Math.floor(w * .85), height: 110 }) },
+      code => {
+        if (!validIsbn(code)) return;                         // ignore misreads: must be a real ISBN (978/979 + valid check digit)
+        if (code === last) hits++; else { last = code; hits = 1; }
+        if (hits < 2) return;                                  // same number twice in a row before we accept it
+        beep(); stopScan(); $('isbn').value = code; lookup();
+      });
+    $('torchBtn').hidden = !(await setTorch(true));
   } catch (e) { stopScan(); say('Camera not available. Allow camera access, or type the ISBN.', 'err'); }
 };
-$('isbn').addEventListener('change', lookup);
+$('isbn').addEventListener('change', () => {
+  const v = $('isbn').value;
+  if (!v.trim()) return;
+  if (!validIsbn(v)) return say('That ISBN does not look right. Please check the digits.', 'err');
+  lookup();
+});
 
 async function lookup() {
-  const isbn = $('isbn').value.replace(/\D/g, '');
-  if (isbn.length < 10) return;
-  busy(true); say('');
+  const isbn = $('isbn').value.replace(/[^0-9Xx]/g, '').toUpperCase(), my = ++token;
+  if (!isbn) return;
+  say(''); busy(true);
+  // Show the book card and cover right away; the details fill in when the backend answers
+  $('bTitle').textContent = 'Looking up this book…'; $('bAuthor').textContent = ''; $('bStatus').textContent = ''; $('bStatus').className = 'badge';
+  $('cover').hidden = false; $('cover').onerror = () => $('cover').hidden = true; $('cover').src = coverUrl(isbn);
+  $('book').hidden = false; ['borrowFields', 'submitBtn', 'titleWrap'].forEach(id => $(id).hidden = true);
   try {
-    const r = await (await fetch(API + '?isbn=' + isbn)).json();
-    current = { isbn, borrowed: r.borrowed };
+    const r = await getJson(API + '?isbn=' + isbn);
+    if (my !== token) return;
+    current = { isbn, borrowed: r.borrowed, unknown: r.title === 'Unknown title' };
     $('bTitle').textContent = r.title; $('bAuthor').textContent = r.author;
-    $('cover').hidden = false; $('cover').onerror = () => $('cover').hidden = true; $('cover').src = coverUrl(isbn);
-    $('book').hidden = false;
     const ok = mode === 'borrow' ? !r.borrowed : r.borrowed;
     $('bStatus').textContent = r.borrowed ? 'Checked out' : 'Available'; $('bStatus').className = 'badge' + (r.borrowed ? ' out' : '');
     $('borrowFields').hidden = !(ok && mode === 'borrow'); $('submitBtn').hidden = !ok;
+    $('titleWrap').hidden = !(ok && mode === 'borrow' && current.unknown);
     if (ok && mode === 'borrow') loadMember();
     if (!ok) say(mode === 'borrow' ? 'This book is already checked out.' : 'This book is not checked out.', 'err');
-  } catch (e) { say('Lookup failed: ' + e.message, 'err'); }
-  busy(false);
+  } catch (e) { if (my === token) { $('book').hidden = true; say('Lookup is taking too long. Tap the ISBN box and press Enter to try again.', 'err'); } }
+  if (my === token) busy(false);
 }
 
 $('submitBtn').onclick = async () => {
-  const p = { action: mode, isbn: current.isbn, name: $('name').value.trim(), email: $('email').value.trim(), phone: $('phone').value.trim() };
+  const p = { action: mode, isbn: current.isbn, title: $('titleIn').value.trim(), name: $('name').value.trim(), email: $('email').value.trim(), phone: $('phone').value.trim() };
   $('submitBtn').disabled = true; busy(true); say('');
   try {
-    const r = await (await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(p) })).json();
+    const c = new AbortController(), t = setTimeout(() => c.abort(), 40000);
+    const r = await (await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(p), signal: c.signal })).json();
+    clearTimeout(t);
     if (r.ok) {
       beep();
       if (mode === 'borrow') localStorage.setItem('member', JSON.stringify({ name: p.name, email: p.email, phone: p.phone }));
@@ -225,14 +256,14 @@ $('submitBtn').onclick = async () => {
       say('A confirmation email is on its way.', 'ok');
       view('done');
     } else say(r.error, 'err');
-  } catch (e) { say('Could not save: ' + e.message, 'err'); }
+  } catch (e) { say('This is taking longer than expected. Check the Loans sheet before trying again, in case it saved.', 'err'); }
   busy(false); $('submitBtn').disabled = false;
 };
 
 async function loadShelf() {
   $('grid').textContent = ''; busy(true);
   try {
-    const r = await (await fetch(API + '?action=shelf')).json();
+    const r = await getJson(API + '?action=shelf');
     if (!r.books.length) say('No books on the shelf yet. Borrowed books appear here automatically.');
     r.books.forEach(b => {
       const t = document.createElement('div'); t.className = 'tile';
