@@ -85,10 +85,8 @@
 
   <section class="panel" id="scanView">
     <button class="btn alt" id="scanBtn">Scan the book's barcode</button>
-    <button class="btn alt" id="photoBtn" type="button">Or take a photo of the barcode</button>
-    <input type="file" id="photoIn" accept="image/*" capture="environment" hidden>
     <div id="reader" hidden><video id="cam" playsinline muted autoplay></video><div class="guide"></div></div>
-    <p class="muted" id="hint" hidden style="margin:.5rem 0 0;font-size:.9rem">Hold the phone 6 to 8 inches away and fit the barcode inside the box. Keep it steady and well lit. If it will not scan, tap Cancel and use "Take a photo of the barcode".</p>
+    <p class="muted" id="hint" hidden style="margin:.5rem 0 0;font-size:.9rem">Hold the phone 6 to 8 inches away and fit the barcode inside the box. Keep it steady and well lit. If it will not scan, tap Cancel and type the ISBN.</p>
     <div class="tools" id="tools" hidden>
       <button class="btn alt" id="torchBtn" hidden>Flashlight: off</button>
       <button class="btn alt" id="cancelBtn">Cancel</button>
@@ -209,7 +207,7 @@ function stopScan() {
   if (cam) { cam.run = false; cam.stream.getTracks().forEach(t => t.stop()); cam = null; }
   $('cam').srcObject = null;
   ['reader', 'tools', 'hint', 'torchBtn'].forEach(id => $(id).hidden = true);
-  $('scanBtn').hidden = false; $('photoBtn').hidden = false;
+  $('scanBtn').hidden = false;
 }
 $('cancelBtn').onclick = stopScan;
 $('torchBtn').onclick = () => setTorch(!$('torchBtn').dataset.on);
@@ -230,40 +228,23 @@ async function scanLoop(c) {
 
 $('scanBtn').onclick = async () => {
   say(''); last = ''; hits = 0;
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return say('This browser cannot open the camera here. Use "Take a photo of the barcode" or type the ISBN.', 'err');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return say('This browser cannot open the camera here. Please type the ISBN instead.', 'err');
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } } });
     cam = { stream, run: true };
     const v = $('cam'); v.srcObject = stream; v.muted = true; v.setAttribute('playsinline', ''); await v.play();
     ['reader', 'tools', 'hint'].forEach(id => $(id).hidden = false);
-    $('scanBtn').hidden = true; $('photoBtn').hidden = true;
+    $('scanBtn').hidden = true;
     $('torchBtn').hidden = !(await setTorch(true));
     scanLoop(cam);
   } catch (e) {
     stopScan();
     say(/denied|NotAllowed|Permission/i.test(String(e && (e.name + ' ' + e.message)))
       ? 'Camera permission is blocked. On iPhone, tap the "aA" icon in the address bar, then Website Settings, then Camera, and choose Allow. Then try again.'
-      : 'Camera could not start. Use "Take a photo of the barcode" instead, or type the ISBN.', 'err');
+      : 'Camera could not start. You can type the ISBN instead.', 'err');
   }
 };
 
-// Photo option: the phone's own camera app focuses well, which is the most reliable way on iPhone
-$('photoBtn').onclick = () => $('photoIn').click();
-$('photoIn').onchange = async () => {
-  const f = $('photoIn').files[0]; $('photoIn').value = '';
-  if (!f) return;
-  say(''); busy(true);
-  try {
-    const bmp = await createImageBitmap(f);
-    const sc = Math.min(1, 1800 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas');
-    c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
-    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-    const found = (await getDetector().detect(c)).map(b => b.rawValue).filter(validIsbn);
-    if (found.length) { beep(); $('isbn').value = found[0]; busy(false); return lookup(); }
-    say('Could not find a barcode in that photo. Get closer so the barcode fills the frame, keep it sharp and well lit, then try again. Or type the ISBN.', 'err');
-  } catch (e) { say('Could not read that photo. Try again, or type the ISBN.', 'err'); }
-  busy(false);
-};
 $('isbn').addEventListener('change', () => {
   const v = $('isbn').value;
   if (!v.trim()) return;
