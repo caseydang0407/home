@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Block Subtraction</title>
+<style>
+:root{--bg:#fff8e7;--card:#ffffff;--ink:#2b2d42;--rod:#4dabf7;--rod-line:#1c7ed6;--grid:rgba(28,126,214,.55);--cube:#ffa94d;--cube-line:#e8590c;--ok:#2f9e44;--bad:#e03131;--btn:#7048e8;--btnink:#fff;--msg:#e7f5ff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1b2f;--card:#26264a;--ink:#f1f3f5;--msg:#1c3a57;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1b2f;--card:#26264a;--ink:#f1f3f5;--msg:#1c3a57;color-scheme:dark}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Comic Sans MS",system-ui,sans-serif}
+.app{max-width:680px;margin:0 auto;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h1{font-size:22px;margin:4px 0}
+.icons{display:flex;gap:6px}
+.ib{font-size:22px;border:0;border-radius:12px;background:var(--card);color:var(--ink);padding:6px 10px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.stars{font-size:20px;font-weight:bold;min-height:28px}
+.eq{text-align:center;font-size:46px;font-weight:bold;margin:4px 0}
+.eq .q{color:var(--btn)}
+.msg{background:var(--msg);border-radius:16px;padding:12px 14px;font-size:19px;min-height:48px;text-align:center}
+.board{background:var(--card);border-radius:20px;padding:14px;margin:10px 0;display:flex;gap:18px;justify-content:center;align-items:flex-end;flex-wrap:wrap;min-height:170px;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.group{display:flex;flex-direction:column;align-items:center;gap:6px}
+.label{font-size:14px;font-weight:bold;opacity:.75}
+.row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;justify-content:center}
+.zero{font-size:34px;opacity:.35;padding:30px 10px}
+button.rod,button.hund,button.cube{position:relative;padding:0;cursor:pointer;border-radius:4px}
+.rod{width:24px;height:110px;display:flex;flex-direction:column;border:2px solid var(--rod-line);background:var(--rod)}
+.rod i{flex:1;border-bottom:1px solid var(--rod-line)}
+.rod i:last-child{border-bottom:0}
+.hund{width:58px;height:58px;border:2px solid var(--rod-line);background-color:var(--rod);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:5.4px 5.4px}
+.cube{width:22px;height:22px;border:2px solid var(--cube-line);background:var(--cube)}
+.frame{display:grid;grid-template-rows:repeat(5,22px);grid-template-columns:repeat(2,22px);grid-auto-flow:column;gap:4px;padding:5px;border:2px dashed rgba(128,128,128,.55);border-radius:10px}
+.sub{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:5px;border:2px dashed rgba(128,128,128,.55);border-radius:10px;max-width:190px}
+.fresh{visibility:hidden}
+.hl{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.12);box-shadow:0 0 0 4px #ffe066}}
+.x{opacity:.5}
+.x::after{content:"";position:absolute;inset:-2px;background:linear-gradient(to top right,transparent calc(50% - 2px),var(--bad) calc(50% - 2px),var(--bad) calc(50% + 2px),transparent calc(50% + 2px)),linear-gradient(to bottom right,transparent calc(50% - 2px),var(--bad) calc(50% - 2px),var(--bad) calc(50% + 2px),transparent calc(50% + 2px))}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+button.big{font:inherit;font-size:24px;font-weight:bold;min-width:84px;padding:12px 18px;border:0;border-radius:16px;background:var(--btn);color:var(--btnink);cursor:pointer}
+button.big:active{transform:scale(.96)}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.good{color:var(--ok);font-weight:bold}
+.done{text-align:center;font-size:26px;padding:20px}
+.piece{position:fixed;z-index:40;pointer-events:none;box-sizing:border-box;border-radius:3px}
+.piece.c{background:var(--cube);border:1.5px solid var(--cube-line)}
+.piece.r{background:var(--rod);border:1.5px solid var(--rod-line)}
+.animal{position:fixed;z-index:50;pointer-events:none;text-align:center}
+.animal .e{font-size:84px;line-height:1}
+.animal .b{display:inline-block;background:#fff;color:#2b2d42;border-radius:14px;padding:4px 12px;font-weight:bold;font-size:17px;margin-bottom:2px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.menu{text-align:center;padding:20px 0}
+[hidden]{display:none!important}
+.menu p{font-size:20px;font-weight:bold;margin:14px 0 4px}
+.pair{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cap{font-size:15px;font-weight:bold;opacity:.8;margin:6px 4px 0}
+.board.two{min-height:100px;margin-top:4px}
+.menu button.big{width:min(210px,44%);font-size:22px;padding:14px 8px}
+.menu small{display:block;font-size:16px;font-weight:normal;opacity:.9;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><h1>🧱 Block Subtraction</h1>
+    <div class="icons"><button class="ib" id="home" aria-label="Change level" hidden>🏠</button><button class="ib" id="snd" aria-label="Sound on or off">🔊</button></div></div>
+  <div id="menu" class="menu">
+    <p>Pick your challenge!</p>
+    <p>➕ Addition</p>
+    <div class="pair"><button class="big" data-op="add" data-n="2" style="background:#2f9e44">2-digit<small>like 27 + 38</small></button><button class="big" data-op="add" data-n="3" style="background:#2b8a3e">3-digit<small>like 248 + 175</small></button></div>
+    <p>➖ Subtraction</p>
+    <div class="pair"><button class="big" data-op="sub" data-n="2">2-digit<small>like 53 − 36</small></button>
+    <button class="big" data-op="sub" data-n="3" style="background:#e8590c">3-digit<small>like 352 − 168</small></button></div>
+  </div>
+  <div id="game" hidden>
+    <div class="stars" id="stars"></div>
+    <div class="eq" id="eq"></div>
+    <div class="msg" id="msg"></div>
+    <div class="cap" id="cap1" hidden></div>
+    <div class="board" id="board"></div>
+    <div class="cap" id="cap2" hidden></div>
+    <div class="board two" id="board2" hidden></div>
+    <div class="actions" id="actions"></div>
+  </div>
+</div>
+<script>
+const TOTAL = 6, NAMES = ["ones","tens","hundreds"], SING = ["one","ten","hundred"];
+const ANIMALS = ["🐶","🐱","🐼","🦊","🐰","🐸","🐵","🦁","🐯","🐨","🐷","🐥","🦄","🐻","🐮"];
+const CHEERS = ["Great job!","You did it!","Awesome!","Super smart!","Hooray!","Math star!","Wow!","Well done!"];
+let S = null, N = 2, OP = "sub", round = 0, score = 0, muted = false, ac = null;
+const $ = id => document.getElementById(id);
+const div = c => { const d = document.createElement("div"); d.className = c; return d; };
+const nm = (p, c) => c === 1 ? SING[p] : NAMES[p];
+
+/* ---------- sound ---------- */
+function A(){ try{ if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); if(ac.state === "suspended") ac.resume(); }catch(e){} return ac; }
+function tone(f, t, d, type, v, f2){
+  if(muted) return; const c = A(); if(!c) return;
+  try{
+    const s = c.currentTime + t, o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(f, s);
+    if(f2) o.frequency.exponentialRampToValueAtTime(f2, s + d);
+    g.gain.setValueAtTime(.0001, s); g.gain.exponentialRampToValueAtTime(v || .15, s + .015); g.gain.exponentialRampToValueAtTime(.0001, s + d);
+    o.connect(g); g.connect(c.destination); o.start(s); o.stop(s + d + .05);
+  }catch(e){}
+}
+const sfx = {
+  pop(n){ tone(380 + n*50, 0, .12, "sine", .2, 600 + n*50); },
+  click(){ tone(500, 0, .06, "sine", .1); },
+  wrong(){ tone(220, 0, .25, "triangle", .15, 150); },
+  crack(){ for(let i = 0; i < 8; i++) tone(300 + Math.random()*500, i*.06, .06, "square", .06); },
+  land(){ tone(700 + Math.random()*500, 0, .08, "sine", .1); },
+  bundle(){ [400,500,600,800].forEach((f,i) => tone(f, i*.12, .15, "triangle", .15)); },
+  good(){ [523,659,784,1047].forEach((f,i) => tone(f, i*.11, .25, "triangle", .18)); },
+  win(){ [523,659,784,659,784,1047].forEach((f,i) => tone(f, i*.14, .3, "triangle", .2)); },
+  animal(e){
+    if(e === "🐶"){ tone(300,0,.12,"sawtooth",.15,180); tone(300,.2,.12,"sawtooth",.15,180); }
+    else if(e === "🐱"){ tone(550,0,.25,"sine",.2,900); tone(900,.25,.3,"sine",.2,450); }
+    else if(e === "🐸"){ tone(140,0,.1,"square",.12); tone(170,.14,.12,"square",.12); }
+    else if(e === "🐥"){ for(let i = 0; i < 3; i++) tone(1400 + i*100, i*.1, .07, "sine", .12, 1800); }
+    else { const b = 200 + (ANIMALS.indexOf(e) % 6) * 50; tone(b, 0, .3, "sine", .2, b*2.5); }
+  }
+};
+
+/* ---------- problems ---------- */
+function digits(x, n){ const d = []; for(let i = 0; i < n; i++){ d.push(x % 10); x = Math.floor(x/10); } return d; }
+function makeAdd(i, n){
+  const needCarry = i >= 2, min = Math.pow(10, n-1), max = Math.pow(10, n) - 1;
+  const mkI = d => d.map(c => Array.from({length: c}, () => ({x:false, t:false, fresh:false})));
+  for(let k = 0; k < 5000; k++){
+    const a = min + Math.floor(Math.random()*(max - min + 1)), b = min + Math.floor(Math.random()*(max - min + 1));
+    const ad = digits(a, n), bd = digits(b, n); let carry = 0, carries = 0, ok = true;
+    for(let p = 0; p < n; p++){
+      const t = ad[p] + bd[p] + carry;
+      if(p < n-1){ carry = t >= 10 ? 1 : 0; carries += carry; } else if(t >= 10) ok = false;
+    }
+    if(!ok || (needCarry ? carries < 1 : carries > 0)) continue;
+    return {a, b, n, ad, bd, sym: "+", target: a + b, items: mkI(ad), bitems: mkI(bd), p: 0, phase: "combine", busy: false};
+  }
+}
+function makeProblem(i, n){
+  if(OP === "add") return makeAdd(i, n);
+  const needTrade = i >= 2, min = Math.pow(10, n-1), lo = n === 2 ? 20 : 200, hi = n === 2 ? 99 : 999;
+  for(let k = 0; k < 5000; k++){
+    const a = lo + Math.floor(Math.random()*(hi - lo + 1));
+    const b = min + Math.floor(Math.random()*(a - min));
+    if(b >= a) continue;
+    const ad = digits(a, n), bd = digits(b, n), cur = ad.slice();
+    let trades = 0, ok = true;
+    for(let p = 0; p < n-1; p++){
+      if(cur[p] < bd[p]){ if(cur[p+1] < 1){ ok = false; break; } cur[p+1]--; cur[p] += 10; trades++; }
+    }
+    if(!ok || cur[n-1] < bd[n-1]) continue;
+    if(needTrade ? trades < 1 : trades > 0) continue;
+    const S = {a, b, n, ad, bd, sym: "−", target: a - b, bitems: [[],[],[]], p: 0, phase: "cross", busy: false, items: ad.map(c => Array.from({length: c}, () => ({x:false, t:false, fresh:false})))};
+    return S;
+  }
+}
+function enterPlace(){
+  if(OP === "add") return enterPlaceAdd();
+  const p = S.p;
+  if(S.bd[p] === 0){ if(p === S.n-1){ S.phase = "answer"; } else { S.p++; enterPlace(); } return; }
+  S.phase = p === S.n-1 ? "cross" : "decide";
+}
+const rem = p => S.items[p].filter(o => !o.x).length;
+const crossed = p => S.items[p].filter(o => o.x).length;
+function enterPlaceAdd(){
+  const p = S.p;
+  if(S.bitems[p].length > 0){ S.phase = "combine"; return; }
+  if(p === S.n-1){ S.phase = "answer"; return; }
+  if(rem(p) < 10){ S.p++; enterPlaceAdd(); return; }
+  S.phase = "decide";
+}
+function afterCombine(){ S.phase = S.p === S.n-1 ? "answer" : "decide"; }
+
+/* ---------- flow ---------- */
+function menu(){ $("menu").hidden = false; $("game").hidden = true; $("home").hidden = true; }
+function startGame(op, n){ OP = op; N = n; round = 0; score = 0; $("menu").hidden = true; $("game").hidden = false; $("home").hidden = false; next(); }
+function next(){
+  if(round >= TOTAL){ finish(); return; }
+  S = makeProblem(round, N); enterPlace(); render();
+}
+function finish(){
+  $("stars").textContent = "⭐".repeat(score);
+  $("eq").textContent = "🎉"; $("board2").hidden = true; $("cap1").hidden = true; $("cap2").hidden = true;
+  say("Great job, mathematician!");
+  $("board").innerHTML = '<div class="done">You earned ' + score + ' of ' + TOTAL + ' stars ⭐<br>Practice makes you faster!</div>';
+  const act = $("actions"); act.innerHTML = "";
+  btn(act, "Play again", () => startGame(OP, N)); btn(act, "Change level", menu);
+  sfx.win(); celebrate();
+}
+function say(t, good){ const m = $("msg"); m.textContent = t; m.className = "msg" + (good ? " good" : ""); }
+function shake(){ const b = $("board"); b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); }
+function btn(parent, text, fn){ const b = document.createElement("button"); b.className = "big"; b.textContent = text; b.onclick = fn; parent.appendChild(b); }
+
+/* ---------- drawing ---------- */
+function mk(q, i, o, src){
+  const d = document.createElement("button");
+  const hl = OP === "add" ? (S.phase === "combine" && src === "b" && q === S.p) || (S.phase === "trade" && src === "a" && q === S.p && i < 10) : S.phase === "trade" && q === S.p + 1 && !o.x;
+  d.dataset.q = q; d.dataset.i = i;
+  d.className = ["cube","rod","hund"][q] + (o.x ? " x" : "") + (o.fresh ? " fresh" : "") + (hl ? " hl" : "");
+  if(q === 1) d.innerHTML = "<i></i>".repeat(10);
+  d.setAttribute("aria-label", "one " + SING[q]);
+  d.onclick = () => tap(q, i, d, src);
+  return d;
+}
+function placeGroup(q, src){
+  const g = div("group"), lab = div("label"), row = div("row");
+  lab.textContent = NAMES[q][0].toUpperCase() + NAMES[q].slice(1);
+  const o = [], t = [];
+  (src === "b" ? S.bitems : S.items)[q].forEach((it, i) => (it.t ? t : o).push(mk(q, i, it, src)));
+  if(q === 0){
+    [o, t].forEach(list => { for(let k = 0; k < list.length; k += 10){ const f = div("frame"); list.slice(k, k + 10).forEach(e => f.appendChild(e)); row.appendChild(f); } });
+  } else {
+    o.forEach(e => row.appendChild(e));
+    if(t.length){ const s = div("sub"); t.forEach(e => s.appendChild(e)); row.appendChild(s); }
+  }
+  if(q === 2) row.style.maxWidth = "200px";
+  if(!o.length && !t.length){ const z = div("zero"); z.textContent = "0"; row.appendChild(z); }
+  g.appendChild(row); g.appendChild(lab); return g;
+}
+function render(){
+  $("stars").textContent = "⭐".repeat(score) + "  " + (round+1) + "/" + TOTAL;
+  $("eq").innerHTML = S.a + " " + S.sym + " " + S.b + ' = <span class="q">' + (S.phase === "done" ? S.target : "?") + "</span>";
+  const board = $("board"); board.innerHTML = "";
+  for(let q = S.n-1; q >= 0; q--) board.appendChild(placeGroup(q, "a"));
+  const add = OP === "add"; $("cap1").hidden = $("cap2").hidden = $("board2").hidden = !add;
+  if(add){
+    $("cap1").textContent = "Your group of blocks"; $("cap2").textContent = "Add these blocks: " + S.b;
+    const b2 = $("board2"); b2.innerHTML = ""; for(let q = S.n-1; q >= 0; q--) b2.appendChild(placeGroup(q, "b"));
+  }
+  const act = $("actions"); act.innerHTML = "";
+  const p = S.p; let m = "";
+  if(OP === "add" && S.phase === "combine"){ m = "Add the " + NAMES[p] + ": tap the glowing blocks to move them into your group."; }
+  else if(OP === "add" && S.phase === "decide"){
+    m = "You have " + rem(p) + " " + nm(p, rem(p)) + ". Can you make a " + SING[p+1] + " (10 or more)?";
+    btn(act, "Yes 👍", () => decide(true)); btn(act, "No", () => decide(false));
+  } else if(OP === "add" && S.phase === "trade"){ m = "Tap the glowing " + NAMES[p] + " to bundle 10 of them into 1 " + SING[p+1] + "!"; }
+  else if(S.phase === "decide"){
+    m = "Subtract " + S.bd[p] + " " + nm(p, S.bd[p]) + ". You have " + rem(p) + " " + nm(p, rem(p)) + ". Can you take away " + S.bd[p] + "?";
+    btn(act, "Yes 👍", () => decide(true)); btn(act, "No, trade!", () => decide(false));
+  } else if(S.phase === "trade"){
+    m = "Not enough " + NAMES[p] + "! Tap 1 " + SING[p+1] + " to trade it for 10 " + NAMES[p] + ".";
+  } else if(S.phase === "cross"){
+    const left = S.bd[p] - crossed(p);
+    m = "Subtract " + S.bd[p] + " " + nm(p, S.bd[p]) + ": tap " + left + " more to cross out.";
+  } else if(S.phase === "answer"){
+    const parts = []; for(let q = S.n-1; q >= 0; q--) parts.push(rem(q) + " " + nm(q, rem(q)));
+    m = (OP === "add" ? "Count all the blocks: " : "Count what is left: ") + parts.join(", ") + ". What is " + S.a + " " + S.sym + " " + S.b + "?";
+    const ans = S.target, set = new Set([ans]);
+    [ans+10, ans-10, S.n === 3 ? ans+100 : ans+1, ans-1, ans+2].forEach(v => { if(set.size < 3 && v >= 0) set.add(v); });
+    [...set].sort(() => Math.random() - .5).forEach(v => btn(act, v, () => answer(v)));
+  } else if(S.phase === "done"){
+    m = "Yes! " + S.a + " " + S.sym + " " + S.b + " = " + S.target + " ⭐";
+    btn(act, round + 1 >= TOTAL ? "Finish" : "Next ➜", () => { round++; next(); });
+  }
+  if(!S.busy) say(m, S.phase === "done");
+}
+
+/* ---------- actions ---------- */
+function tap(q, i, el, src){
+  if(S.busy || S.phase === "done") return;
+  if(OP === "add"){
+    if(S.phase === "combine" && src === "b" && q === S.p){
+      S.bitems[q].splice(i, 1); S.items[q].push({x:false, t:false, fresh:false}); sfx.pop(S.items[q].length % 10 || 10);
+      if(S.bitems[q].length === 0) afterCombine();
+      render(); return;
+    }
+    if(S.phase === "trade" && src === "a" && q === S.p && i < 10){ doCarry(q); return; }
+    sfx.wrong(); shake(); return;
+  }
+  const it = S.items[q][i];
+  if(S.phase === "cross" && q === S.p){
+    if(it.x){ it.x = false; sfx.click(); render(); return; }
+    const c = crossed(q);
+    if(c >= S.bd[q]){ sfx.wrong(); shake(); return; }
+    it.x = true; sfx.pop(c + 1);
+    if(c + 1 === S.bd[q]){ if(q === S.n-1) S.phase = "answer"; else { S.p++; enterPlace(); } }
+    render();
+  } else if(S.phase === "trade" && q === S.p + 1 && !it.x){
+    doTrade(q, i, el);
+  } else { sfx.wrong(); shake(); }
+}
+function decide(yes){
+  if(OP === "add"){
+    const p = S.p, can = rem(p) >= 10;
+    if(yes === can){ sfx.click(); if(can) S.phase = "trade"; else { S.p++; enterPlaceAdd(); } render(); }
+    else { sfx.wrong(); shake(); say(can ? "You have " + rem(p) + ", which is 10 or more. You can make a " + SING[p+1] + "!" : rem(p) + " is less than 10, so you cannot make a " + SING[p+1] + " yet. Try again!"); }
+    return;
+  }
+  const p = S.p, can = rem(p) >= S.bd[p];
+  if(yes === can){ sfx.click(); S.phase = can ? "cross" : "trade"; render(); }
+  else { sfx.wrong(); shake(); say(can ? "Look again: " + rem(p) + " is enough to take away " + S.bd[p] + "!" : rem(p) + " " + NAMES[p] + " is not enough to take away " + S.bd[p] + ". Try again!"); }
+}
+function doTrade(q, i, el){
+  const to = q - 1, r = el.getBoundingClientRect();
+  S.busy = true; S.items[q].splice(i, 1);
+  S.items[to].push(...Array.from({length: 10}, () => ({x:false, t:true, fresh:true})));
+  S.phase = "cross"; render();
+  say("Breaking 1 " + SING[q] + " into 10 " + NAMES[to] + "!");
+  sfx.crack();
+  const targets = [...document.querySelectorAll(".fresh")]; let done = 0;
+  targets.forEach((t, k) => {
+    const tr = t.getBoundingClientRect(), pc = div("piece " + (to === 0 ? "c" : "r"));
+    const sl = q === 1 ? {l: r.left, t: r.top + k*r.height/10, w: r.width, h: r.height/10}
+                       : {l: r.left + k*r.width/10, t: r.top, w: r.width/10, h: r.height};
+    const px = v => v + "px", mx = sl.l + (Math.random() - .5)*180, my = sl.t - 40 - Math.random()*60;
+    pc.style.cssText = "left:" + px(sl.l) + ";top:" + px(sl.t) + ";width:" + px(sl.w) + ";height:" + px(sl.h);
+    document.body.appendChild(pc);
+    const a = pc.animate([
+      {left: px(sl.l), top: px(sl.t), width: px(sl.w), height: px(sl.h), transform: "rotate(0deg)"},
+      {offset: .35, left: px(mx), top: px(my), width: px(sl.w), height: px(sl.h), transform: "rotate(" + ((Math.random() - .5)*160) + "deg)"},
+      {left: px(tr.left), top: px(tr.top), width: px(tr.width), height: px(tr.height), transform: "rotate(0deg)"}
+    ], {duration: 1000 + k*60, delay: 150, easing: "ease-in-out", fill: "both"});
+    a.onfinish = () => { pc.remove(); t.classList.remove("fresh"); sfx.land(); if(++done === targets.length){ S.items[to].forEach(o => o.fresh = false); S.busy = false; render(); } };
+  });
+}
+function doCarry(p){
+  const rects = [];
+  for(let k = 0; k < 10; k++) rects.push(document.querySelector('#board [data-q="' + p + '"][data-i="' + k + '"]').getBoundingClientRect());
+  S.busy = true; S.items[p].splice(0, 10); S.items[p+1].push({x:false, t:true, fresh:true});
+  S.phase = "carry"; render();
+  say("Bundling 10 " + NAMES[p] + " into 1 " + SING[p+1] + "!"); sfx.bundle();
+  const t = document.querySelector(".fresh"), tr = t.getBoundingClientRect(); let done = 0;
+  const px = v => v + "px";
+  rects.forEach((r, k) => {
+    const pc = div("piece " + (p === 0 ? "c" : "r"));
+    const sl = p === 0 ? {l: tr.left, t: tr.top + k*tr.height/10, w: tr.width, h: tr.height/10}
+                       : {l: tr.left + k*tr.width/10, t: tr.top, w: tr.width/10, h: tr.height};
+    pc.style.cssText = "left:" + px(r.left) + ";top:" + px(r.top) + ";width:" + px(r.width) + ";height:" + px(r.height);
+    document.body.appendChild(pc);
+    const a = pc.animate([
+      {left: px(r.left), top: px(r.top), width: px(r.width), height: px(r.height), transform: "rotate(0deg)"},
+      {offset: .5, left: px((r.left + sl.l)/2), top: px(Math.min(r.top, sl.t) - 40), width: px(r.width), height: px(r.height), transform: "rotate(" + ((Math.random() - .5)*120) + "deg)"},
+      {left: px(sl.l), top: px(sl.t), width: px(sl.w), height: px(sl.h), transform: "rotate(0deg)"}
+    ], {duration: 900 + k*50, delay: 100, easing: "ease-in-out", fill: "both"});
+    a.onfinish = () => { pc.remove(); sfx.land(); if(++done === 10){ t.classList.remove("fresh"); S.items[p+1].forEach(o => o.fresh = false); S.busy = false; S.p++; enterPlaceAdd(); render(); } };
+  });
+}
+function answer(v){
+  if(v === S.target){ score++; S.phase = "done"; render(); sfx.good(); celebrate(); }
+  else { sfx.wrong(); shake(); say("Almost! Count the tens and ones that are left, then try again."); }
+}
+function celebrate(){
+  const n = 1 + Math.floor(Math.random()*3);
+  for(let k = 0; k < n; k++){
+    const e = ANIMALS[Math.floor(Math.random()*ANIMALS.length)], txt = CHEERS[Math.floor(Math.random()*CHEERS.length)];
+    const d = div("animal");
+    d.style.left = (5 + Math.random()*62) + "vw"; d.style.top = (15 + Math.random()*55) + "vh";
+    d.innerHTML = '<div class="b">' + txt + '</div><div class="e">' + e + "</div>";
+    document.body.appendChild(d);
+    const a = d.animate([
+      {transform: "scale(0) rotate(-20deg)", opacity: 0},
+      {transform: "scale(1.3) rotate(10deg)", opacity: 1, offset: .25},
+      {transform: "scale(1) rotate(-6deg)", offset: .45},
+      {transform: "scale(1.05) rotate(6deg)", offset: .65},
+      {transform: "scale(1) rotate(0deg)", opacity: 1, offset: .85},
+      {transform: "scale(.6)", opacity: 0}
+    ], {duration: 2200, delay: k*250, fill: "both"});
+    a.onfinish = () => d.remove();
+    setTimeout(() => sfx.animal(e), k*250 + 100);
+  }
+}
+document.querySelectorAll("#menu button").forEach(b => b.onclick = () => { A(); startGame(b.dataset.op, +b.dataset.n); });
+$("home").onclick = menu;
+$("snd").onclick = () => { muted = !muted; $("snd").textContent = muted ? "🔇" : "🔊"; if(!muted){ A(); sfx.click(); } };
+</script>
+</body>
+</html>
