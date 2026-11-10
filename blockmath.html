@@ -238,7 +238,7 @@ function render(){
   } else if(OP === "add" && S.phase === "trade"){ m = "Tap the glowing " + NAMES[p] + " to bundle 10 of them into 1 " + SING[p+1] + "!"; }
   else if(S.phase === "decide"){
     m = "Subtract " + S.bd[p] + " " + nm(p, S.bd[p]) + ". You have " + rem(p) + " " + nm(p, rem(p)) + ". Can you take away " + S.bd[p] + "?";
-    btn(act, "Yes 👍", () => decide(true)); btn(act, "No, trade!", () => decide(false));
+    btn(act, "Yes 👍", () => decide(true)); btn(act, "No, regroup!", () => decide(false));
   } else if(S.phase === "trade"){
     m = "Not enough " + NAMES[p] + "! Tap 1 " + SING[p+1] + " to trade it for 10 " + NAMES[p] + ".";
   } else if(S.phase === "cross"){
