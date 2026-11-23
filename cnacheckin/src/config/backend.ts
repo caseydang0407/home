@@ -5,4 +5,4 @@
  * This is intentionally kept out of the public UI so visitors cannot modify it.
  */
 export const APPS_SCRIPT_WEB_APP_URL: string =
-  (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_APPS_SCRIPT_URL ?? '';
+  (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_APPS_SCRIPT_URL ?? 'https://script.google.com/macros/s/AKfycbwULmg1MdG1ljR-7Hdf9ggHGFIFvREa_b64OLEIWoQUVWPIBxAuN9EoXO25GbJ255iMKw/exec';
